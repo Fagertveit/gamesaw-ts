@@ -1,3 +1,3 @@
-import { Vector2 } from './geometry/index';
+import { Vector2, Point, Vector3, Line, Circle } from './geometry/index';
 
-export { Vector2 };
+export { Point, Vector2, Vector3, Line, Circle };
