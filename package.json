@@ -1,0 +1,41 @@
+{
+  "name": "gamesaw",
+  "version": "0.0.1",
+  "description": "A Collection of modules that is used to create HTML5 games, written in TypeScript",
+  "main": "dist/gamesaw.min.js",
+  "scripts": {
+    "prepublish": "webpack --debug; webpack -p",
+    "lint": "tslint ./src/**/*.ts",
+    "start": "webpack -w",
+    "test": "karma start ./karma.config.js"
+  },
+  "keywords": [
+    "Gamedevelopment",
+    "Gamelibrary",
+    "TypeScript",
+    "HTML5",
+    "Canvas",
+    "WebGL"
+  ],
+  "author": "Glenn Edberg",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/webgl-ext": "0.0.27",
+    "html-webpack-plugin": "^2.24.1",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.8.0",
+    "phantomjs-prebuilt": "^2.1.13",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^1.2.0",
+    "tslint": "^3.15.1",
+    "tslint-loader": "^2.1.5",
+    "typescript": "^2.0.9",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  }
+}
