@@ -28,7 +28,7 @@ export class Color {
     constructor() {}
 
     public getHex(): string {
-        return "#" + ((1 << 24) + (this.rgb[RGBA.RED] << 16) + (this.rgb[RGBA.GREEN] << 8) + this.rgb[RGBA.BLUE]).toString(16).slice(1);
+        return '#' + ((1 << 24) + (this.rgb[RGBA.RED] << 16) + (this.rgb[RGBA.GREEN] << 8) + this.rgb[RGBA.BLUE]).toString(16).slice(1);
     }
 
     public setHex(hex: string): void {

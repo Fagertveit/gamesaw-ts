@@ -5,7 +5,7 @@ export class Surface3d extends Surface {
     public width: number;
     public height: number;
     public id: string;
-    public canvas: HTMLCanvasElement
+    public canvas: HTMLCanvasElement;
 
     constructor() {
         super();

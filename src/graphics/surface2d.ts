@@ -2,17 +2,13 @@ import { Surface } from './surface.abstract';
 import { Color } from './color';
 
 export class Surface2d extends Surface {
-    public width: number;
-    public height: number;
-    public id: string;
-    public canvas: HTMLCanvasElement
+    public width: number = 640;
+    public height: number = 480;
+    public id: string = 'canvas-2d';
+    public canvas: HTMLCanvasElement;
 
     constructor() {
         super();
-    }
-
-    public createCanvas(): void {
-
     }
 
     public clear(color: Color): void {

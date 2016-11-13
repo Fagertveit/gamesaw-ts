@@ -3,8 +3,32 @@
 <head>
     <title>GameSaw Game Library</title>
     <script src="../dist/gamesaw.js"></script>
+    <style>
+        .container {
+            width: 640px;
+            margin: 10px auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>GameSaw Game Library</h1>
+    <div class="container">
+        <h1>GameSaw Game Library</h1>
+        <div id="gamesaw-container">
+
+        </div>
+    </div>
+
+<script>
+    var surface = new gamesaw.Surface2d();
+    surface.createCanvas();
+
+    var ctx = surface.getContext();
+
+    ctx.beginPath();
+    ctx.moveTo(10, 10);
+    ctx.lineTo(120, 120);
+    ctx.closePath();
+    ctx.stroke();
+</script>
 </body>
 </html>
