@@ -19,7 +19,7 @@
     </div>
 
 <script>
-    var surface = new gamesaw.Surface2d();
+    var surface = new gamesaw.Graphics.Surface2d();
     surface.createCanvas();
 
     var ctx = surface.getContext();
@@ -29,6 +29,9 @@
     ctx.lineTo(120, 120);
     ctx.closePath();
     ctx.stroke();
+
+    var aabb = new gamesaw.Geometry.AABB(300, 200, 50, 50);
+    gamesaw.Geometry.render(ctx, aabb);
 </script>
 </body>
 </html>

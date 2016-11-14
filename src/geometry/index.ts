@@ -9,6 +9,7 @@ import { AABB } from './aabb';
 import { Polygon } from './polygon';
 import { Bezier } from './bezier';
 import { BSpline } from './bspline';
+import { Renderer, render } from './renderer';
 
 export { GeometricEnum, GeometricObject } from './geometry';
 export { Vector2 } from './vector2d';
@@ -21,3 +22,4 @@ export { AABB } from './aabb';
 export { Polygon } from './polygon';
 export { Bezier } from './bezier';
 export { BSpline } from './bspline';
+export { Renderer, render } from './renderer';

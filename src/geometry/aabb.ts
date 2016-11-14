@@ -8,6 +8,16 @@ export class AABB implements GeometricObject {
     public halfHeight = 1;
 
     constructor(x: number, y: number, halfWidth: number, halfHeight: number) {
+        if (x && y) {
+            this.pos.set(x, y);
+        }
 
+        if (halfWidth) {
+            this.halfWidth = halfWidth;
+        }
+
+        if (halfHeight) {
+            this.halfHeight = halfHeight;
+        }
     }
 }
