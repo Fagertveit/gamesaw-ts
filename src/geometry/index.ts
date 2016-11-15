@@ -1,4 +1,4 @@
-import { GeometricEnum, GeometricObject } from './geometry';
+import { GeometricEnum, GeometricName, GeometricObject } from './geometry';
 import { Vector2 } from './vector2d';
 import { Vector3 } from './vector3d';
 import { Point } from './point';
@@ -10,8 +10,9 @@ import { Polygon } from './polygon';
 import { Bezier } from './bezier';
 import { BSpline } from './bspline';
 import { Renderer, render } from './renderer';
+import { Collider, intersects } from './collision';
 
-export { GeometricEnum, GeometricObject } from './geometry';
+export { GeometricEnum, GeometricName, GeometricObject } from './geometry';
 export { Vector2 } from './vector2d';
 export { Point } from './point';
 export { Vector3 } from './vector3d';
@@ -23,3 +24,4 @@ export { Polygon } from './polygon';
 export { Bezier } from './bezier';
 export { BSpline } from './bspline';
 export { Renderer, render } from './renderer';
+export { Collider, intersects } from './collision';

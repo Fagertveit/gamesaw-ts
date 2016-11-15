@@ -12,6 +12,20 @@ export enum GeometricEnum {
     BSPLINE
 };
 
+export const GeometricName: string[] = [
+    'point',
+    'circle',
+    'vector2',
+    'vector3',
+    'line',
+    'triangle',
+    'rectangle',
+    'aabb',
+    'polygon',
+    'bezier',
+    'bspline'
+];
+
 export interface GeometricObject {
     type: GeometricEnum;
 }

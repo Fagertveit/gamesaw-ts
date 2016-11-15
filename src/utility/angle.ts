@@ -1,0 +1,9 @@
+import { PI } from './utility';
+
+export function degreeToRadian(degree: number): number {
+    return degree * (PI / 180);
+}
+
+export function radianToDegree(radian: number): number {
+    return radian * (180 / PI);
+}
