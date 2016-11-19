@@ -37,6 +37,15 @@
     gamesaw.Geometry.render(ctx, circle);
     gamesaw.Geometry.render(ctx, aabb);
     gamesaw.Geometry.render(ctx, rectangle);
+
+    let img = new gamesaw.Graphics.Sprite('./img/pixel.png');
+    //while (!img.loaded) {
+
+    //}
+    setTimeout(function() {
+        img.render(ctx, 300, 300);
+    }, 500);
+
 </script>
 </body>
 </html>
