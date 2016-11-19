@@ -8,6 +8,20 @@ export class Rectangle implements GeometricObject {
     public height = 1;
 
     constructor(x: number, y: number, width: number, height: number) {
+        if (x) {
+            this.pos.x = x;
+        }
 
+        if (y) {
+            this.pos.y = y;
+        }
+
+        if (width) {
+            this.width = width;
+        }
+
+        if (height) {
+            this.height = height;
+        }
     }
 }

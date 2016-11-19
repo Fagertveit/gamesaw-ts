@@ -6,13 +6,17 @@ export class Circle implements GeometricObject {
     public pos: Point = new Point(0, 0);
     public radius: number = 1;
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, radius: number) {
         if (x) {
             this.pos.x = x;
         }
 
         if (y) {
             this.pos.y = y;
+        }
+
+        if (radius) {
+            this.radius = radius;
         }
     }
 

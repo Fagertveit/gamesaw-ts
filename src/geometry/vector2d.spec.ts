@@ -5,11 +5,6 @@ import { expect } from 'chai';
 import { Vector2 } from './index';
 
 describe('Vector2', () => {
-    it('Should be truthy', () => {
-        let truty = true;
-        expect(truty).to.be.equal(true);
-    });
-
     it('Should create a 0.0 2d Vector', () => {
         let vector = new Vector2(0, 0);
         expect(vector.x).to.be.equal(0.0);

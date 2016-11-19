@@ -24,20 +24,88 @@ export class Collider {
     constructor() {}
 
     public intersects(obj0: GeometricObject, obj1: GeometricObject): boolean {
-        let intersects = false;
-        /*
-        if (typeof(this[GeometricName[obj0.type] + capitalize(GeometricName[obj1.type])]) === 'function') {
-            intersects = this[GeometricName[obj0.type] + capitalize(GeometricName[obj1.type])](obj0, obj1);
-        } else if (typeof(this[GeometricName[obj0.type] + capitalize(GeometricName[obj1.type])]) === 'function') {
-            intersects = this[GeometricName[obj0.type] + capitalize(GeometricName[obj1.type])](obj1, obj0);
-        } else {
-            new Error('No collider found for geometric objects.');
+        // Need to check the first object if we can use it as main collider body
+        switch (obj0.type) {
+            case GeometricEnum.POINT:
+            switch (obj1.type) {
+                case GeometricEnum.LINE:
+                return this.pointLine();
+                case GeometricEnum.CIRCLE:
+                return this.pointCircle(obj0 as Point, obj1 as Circle);
+                case GeometricEnum.RECTANGLE:
+                return this.pointRectangle(obj0 as Point, obj1 as Rectangle);
+                case GeometricEnum.POLYGON:
+                return this.pointPolygon();
+                default:
+                throw new Error('Second object not a collidable body');
+            }
+            case GeometricEnum.LINE:
+            switch (obj1.type) {
+                case GeometricEnum.POINT:
+                return this.linePoint();
+                case GeometricEnum.CIRCLE:
+                return this.lineCircle();
+                case GeometricEnum.RECTANGLE:
+                return this.lineRectangle();
+                case GeometricEnum.POLYGON:
+                return this.linePolygon();
+                default:
+                throw new Error('Second object not a collidable body');
+            }
+            case GeometricEnum.CIRCLE:
+            switch (obj1.type) {
+                case GeometricEnum.CIRCLE:
+                return this.circleCircle(obj0 as Circle, obj1 as Circle);
+                case GeometricEnum.LINE:
+                return this.circleLine();
+                case GeometricEnum.POINT:
+                return this.circlePoint(obj0 as Circle, obj1 as Point);
+                case GeometricEnum.RECTANGLE:
+                return this.circleRectangle();
+                case GeometricEnum.POLYGON:
+                return this.circlePolygon(obj0 as Circle, obj1 as Polygon);
+                default:
+                throw new Error('Second object not a collidable body');
+            }
+            case GeometricEnum.RECTANGLE:
+            switch (obj1.type) {
+                case GeometricEnum.RECTANGLE:
+                return this.rectangleRectangle(obj0 as Rectangle, obj1 as Rectangle);
+                case GeometricEnum.LINE:
+                return this.rectangleLine();
+                case GeometricEnum.CIRCLE:
+                return this.rectangleCircle();
+                case GeometricEnum.POINT:
+                return this.rectanglePoint(obj0 as Rectangle, obj1 as Point);
+                case GeometricEnum.POLYGON:
+                return this.rectanglePolygon();
+                default:
+                throw new Error('Second object not a collidable body');
+            }
+            case GeometricEnum.POLYGON:
+            switch (obj1.type) {
+                case GeometricEnum.POLYGON:
+                return this.polygonPolygon();
+                case GeometricEnum.LINE:
+                return this.polygonLine();
+                case GeometricEnum.CIRCLE:
+                return this.polygonCircle(obj0 as Polygon, obj1 as Circle);
+                case GeometricEnum.RECTANGLE:
+                return this.polygonRectangle();
+                case GeometricEnum.POINT:
+                return this.polygonPoint();
+                default:
+                throw new Error('Second object not a collidable body');
+            }
+            default:
+                throw new Error('Couldn\'t find any collider for type');
         }
-        */
-        return intersects;
     }
 
     public pointLine(): boolean {
+        return true;
+    }
+    public linePoint(): boolean {
         return true;
     }
 
@@ -48,14 +116,23 @@ export class Collider {
 
         return len < obj1.radius;
     }
+    public circlePoint(obj0: Circle, obj1: Point): boolean {
+        return this.pointCircle(obj1, obj0);
+    }
 
     public pointRectangle(obj0: Point, obj1: Rectangle): boolean {
         return (obj0.x > obj1.pos.x && obj0.x < obj1.pos.x + obj1.width &&
                 obj0.y > obj1.pos.y && obj0.y < obj1.pos.y + obj1.height);
     }
+    public rectanglePoint(obj0: Rectangle, obj1: Point): boolean {
+        return this.pointRectangle(obj1, obj0);
+    }
 
     public pointPolygon(): boolean {
         return true;
+    }
+    public polygonPoint(): boolean {
+        return this.pointPolygon();
     }
 
     public lineLine(): boolean {
@@ -65,13 +142,22 @@ export class Collider {
     public lineCircle(): boolean {
         return true;
     }
+    public circleLine(): boolean {
+        return this.lineCircle();
+    }
 
     public lineRectangle(): boolean {
         return true;
     }
+    public rectangleLine(): boolean {
+        return this.lineRectangle();
+    }
 
     public linePolygon(): boolean {
         return true;
+    }
+    public polygonLine(): boolean {
+        return this.linePolygon();
     }
 
     public circleCircle(obj0: Circle, obj1: Circle): boolean {
@@ -86,9 +172,15 @@ export class Collider {
     public circleRectangle(): boolean {
         return true;
     }
+    public rectangleCircle(): boolean {
+        return this.circleRectangle();
+    }
 
-    public circlePolygon(): boolean {
+    public circlePolygon(obj0: Circle, obj1: Polygon): boolean {
         return true;
+    }
+    public polygonCircle(obj0: Polygon, obj1: Circle): boolean {
+        return this.circlePolygon(obj1, obj0);
     }
 
     public rectangleRectangle(obj0: Rectangle, obj1: Rectangle): boolean {
@@ -100,6 +192,9 @@ export class Collider {
 
     public rectanglePolygon(): boolean {
         return true;
+    }
+    public polygonRectangle(): boolean {
+        return this.rectanglePolygon();
     }
 
     public polygonPolygon(): boolean {

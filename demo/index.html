@@ -24,14 +24,19 @@
 
     var ctx = surface.getContext();
 
-    ctx.beginPath();
-    ctx.moveTo(10, 10);
-    ctx.lineTo(120, 120);
-    ctx.closePath();
-    ctx.stroke();
+    let point = new gamesaw.Geometry.Point(100, 50);
+    let line = new gamesaw.Geometry.Line(125, 50, 125, 100);
+    let vector2 = new gamesaw.Geometry.Vector2(150, 50);
+    let circle = new gamesaw.Geometry.Circle(225, 75, 25);
+    let aabb = new gamesaw.Geometry.AABB(300, 75, 25, 25);
+    let rectangle = new gamesaw.Geometry.Rectangle(400, 50, 50, 25);
 
-    var aabb = new gamesaw.Geometry.AABB(300, 200, 50, 50);
+    gamesaw.Geometry.render(ctx, point);
+    gamesaw.Geometry.render(ctx, line);
+    gamesaw.Geometry.render(ctx, vector2);
+    gamesaw.Geometry.render(ctx, circle);
     gamesaw.Geometry.render(ctx, aabb);
+    gamesaw.Geometry.render(ctx, rectangle);
 </script>
 </body>
 </html>
