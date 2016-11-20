@@ -27,6 +27,22 @@ export class Sprite {
         context.drawImage(this.image, x, y);
     }
 
+    public renderSize(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+        context.drawImage(this.image, x, y, width, height);
+    }
+
+    public renderSegment(context: CanvasRenderingContext2D, x: number, y: number,
+        segmentX: number, segmentY: number, segmentWidth: number, segmentHeight: number): void {
+        context.drawImage(this.image, segmentX, segmentY, segmentWidth, segmentHeight,
+            x, y, this.width, this.height);
+    }
+
+    public renderSegmentSize(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
+        segmentX: number, segmentY: number, segmentWidth: number, segmentHeight: number): void {
+        context.drawImage(this.image, segmentX, segmentY, segmentWidth, segmentHeight,
+            x, y, width, height);
+    }
+
     private errorHandler(event: Event): void {
         throw new Error('Failed to load sprite.');
     }
@@ -34,5 +50,7 @@ export class Sprite {
     private loadHandler(event: Event): void {
         console.log('Sprite loaded');
         this.loaded = true;
+        this.width = this.image.width;
+        this.height = this.image.height;
     }
 }
