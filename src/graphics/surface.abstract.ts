@@ -7,6 +7,8 @@ export abstract class Surface {
     public abstract id: string;
     public abstract canvas: HTMLCanvasElement;
 
+    public constructor() { }
+
     public createCanvas(): void {
         let container = document.getElementById(CONTAINER_ID);
 

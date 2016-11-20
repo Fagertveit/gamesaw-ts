@@ -7,8 +7,14 @@ export class Surface2d extends Surface {
     public id: string = 'canvas-2d';
     public canvas: HTMLCanvasElement;
 
-    constructor() {
+    constructor(width: number, height: number, id: string) {
         super();
+
+        this.width = width;
+        this.height = height;
+        this.id = id;
+
+        this.createCanvas();
     }
 
     public clear(color: Color): void {

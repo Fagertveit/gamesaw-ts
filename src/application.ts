@@ -1,7 +1,7 @@
 import { SceneManager } from './scene-manager';
 
 export class Application {
-    public sceneManager = new SceneManager();
+    public sceneManager: SceneManager;
     public active: boolean = true;
     public applicationTimer: number;
     public targetFps: number = 30;
@@ -10,8 +10,15 @@ export class Application {
     public lastUpdate: number;
     public fps: number;
     public frames: number;
+    public width: number;
+    public height: number;
 
-    constructor() { }
+    constructor(width: number, height: number, targetFps?: number) {
+        this.width = width;
+        this.height = height;
+
+        this.sceneManager = new SceneManager(this);
+    }
 
     public init(): void {
         this.lastDelta = new Date().getTime();
@@ -45,5 +52,7 @@ export class Application {
         } else {
             this.frames += 1;
         }
+
+        this.sceneManager.update(delta);
     }
 }

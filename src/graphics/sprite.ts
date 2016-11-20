@@ -48,7 +48,6 @@ export class Sprite {
     }
 
     private loadHandler(event: Event): void {
-        console.log('Sprite loaded');
         this.loaded = true;
         this.width = this.image.width;
         this.height = this.image.height;
