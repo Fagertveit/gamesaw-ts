@@ -1,4 +1,5 @@
 import { GeometricEnum, GeometricObject } from './geometry';
+import { EPSILON, PI } from '../utility/utility';
 
 export interface Vec2 {
     x: number;
@@ -100,5 +101,37 @@ export class Vector2 implements GeometricObject, Vec2 {
 
     public angle(): number {
         return Math.atan2(this.x, -this.y);
+    }
+
+    public rotate(radian: number): Vector2 {
+        if (this.x === 0) {
+            this.x += EPSILON;
+        }
+
+        if (this.y === 0) {
+            this.y += EPSILON;
+        }
+
+        return new Vector2(Math.cos(radian) * this.x - Math.sin(radian) * this.y,
+            Math.sin(radian) * this.x + Math.cos(radian) * this.y);
+    }
+
+    public rotatePivot(x: number, y: number, radian: number): Vector2 {
+        if (this.x === 0) {
+            this.x += EPSILON;
+        }
+
+        if (this.y === 0) {
+            this.y += EPSILON;
+        }
+
+        let srcX = this.x;
+        let srcY = this.y;
+
+        srcX -= x;
+        srcY -= y;
+
+        return new Vector2((Math.cos(radian) * srcX - Math.sin(radian) * srcY) + x,
+            (Math.sin(radian) * srcX + Math.cos(radian) * srcY) + y);
     }
 }

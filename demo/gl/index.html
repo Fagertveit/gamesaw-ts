@@ -26,26 +26,41 @@
     var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
     var texture = new gamesaw.GL.Texture(ctx, '../img/pixel.png');
     var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
+    var scale = 1.0;
+    var angle = 0;
+    var scaleUp = true;
     sprite.setUV(0.0, 0.0, 1.0, 1.0);
 
     testScene.render = function(delta) {
         this.clear('test');
         if (texture.ready) {
-
+            /*
             for (var i = 0; i < 1000; i++) {
                 var x = Math.random() * 640;
                 var y = Math.random() * 480;
 
                 sprite.render(renderer, x, y);
-            }
-            /*sprite.render(renderer, 100, 100);
-            sprite.render(renderer, 200, 100);
-            sprite.render(renderer, 300, 100);*/
+            }*/
+            sprite.renderAngle(renderer, 10, 100, angle);
+            sprite.renderScale(renderer, 400, 100, scale);
         }
         renderer.execute();
     };
     testScene.update = function(delta) {
+        angle += 5;
+        if (scale > 5 && scaleUp) {
+            scaleUp = false;
+        }
 
+        if (scale < 0.2 && !scaleUp) {
+            scaleUp = true;
+        }
+
+        if (scaleUp) {
+            scale += 0.2;
+        } else {
+            scale -= 0.2;
+        }
     };
 
     app.start();
