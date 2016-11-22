@@ -1,4 +1,4 @@
-import { Http } from '../utility/http';
+import { Http } from '../../utility/http';
 
 interface AJAXResponse {
     responseText?: string;
@@ -16,12 +16,12 @@ export class Program {
     public gl: WebGLRenderingContext;
     private http: Http;
 
-    constructor(gl: WebGLRenderingContext, fsUrl?: string, vsUrl?: string) {
+    constructor(gl: WebGLRenderingContext, fragmentShaderUrl?: string, vertexShaderUrl?: string) {
         this.gl = gl;
         this.http = new Http(false);
 
-        if (fsUrl && vsUrl) {
-            this.initShader(fsUrl, vsUrl);
+        if (fragmentShaderUrl && vertexShaderUrl) {
+            this.initShader(fragmentShaderUrl, vertexShaderUrl);
         }
     }
 

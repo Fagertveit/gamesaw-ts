@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameSaw Game Library</title>
+    <script src="../../dist/gamesaw.js"></script>
+    <style>
+        .container {
+            width: 640px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GameSaw Game Library</h1>
+        <div id="gamesaw-container">
+
+        </div>
+    </div>
+
+<script>
+    var app = new gamesaw.Application(640, 480, 60);
+    var testScene = app.sceneManager.addScene('test');
+    testScene.add3dSurface('test');
+    var ctx = testScene.getContext('test');
+    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
+    var texture = new gamesaw.GL.Texture(ctx, '../img/pixel.png');
+    var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
+    sprite.setUV(0.0, 0.0, 1.0, 1.0);
+
+    testScene.render = function(delta) {
+        this.clear('test');
+        if (texture.ready) {
+
+            for (var i = 0; i < 1000; i++) {
+                var x = Math.random() * 640;
+                var y = Math.random() * 480;
+
+                sprite.render(renderer, x, y);
+            }
+            /*sprite.render(renderer, 100, 100);
+            sprite.render(renderer, 200, 100);
+            sprite.render(renderer, 300, 100);*/
+        }
+        renderer.execute();
+    };
+    testScene.update = function(delta) {
+
+    };
+
+    app.start();
+</script>
+</body>
+</html>

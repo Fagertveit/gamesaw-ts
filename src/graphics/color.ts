@@ -37,7 +37,18 @@ export class Color {
     ];
     public alpha: number = 1;
 
-    constructor() {}
+    constructor(red?: number, green?: number, blue?: number, alpha?: number) {
+        if (red && green && blue) {
+            this.rgb[RGBA.RED] = red;
+            this.rgb[RGBA.GREEN] = green;
+            this.rgb[RGBA.BLUE] = blue;
+            this.RGBtoHSL();
+        }
+
+        if (alpha) {
+            this.alpha = alpha;
+        }
+    }
 
     public setRGB(red: number, green: number, blue: number): void {
         this.rgb[RGBA.RED] = red;

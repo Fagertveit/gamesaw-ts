@@ -6,6 +6,7 @@ export class Surface2d extends Surface {
     public height: number = 480;
     public id: string = 'canvas-2d';
     public canvas: HTMLCanvasElement;
+    public clearColor: Color = new Color(0, 0, 0, 1);
 
     constructor(width: number, height: number, id: string) {
         super();
@@ -17,7 +18,11 @@ export class Surface2d extends Surface {
         this.createCanvas();
     }
 
-    public clear(color: Color): void {
+    public clear(color?: Color): void {
+        if (color) {
+            this.clearColor = color;
+        }
+
         let ctx = this.getContext();
 
         ctx.clearRect(0, 0, this.width, this.height);

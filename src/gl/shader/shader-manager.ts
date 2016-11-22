@@ -12,8 +12,8 @@ export class ShaderManager {
         this.gl = gl;
     }
 
-    public createProgram(fsUrl: string, vsUrl: string, id: string) {
-        this.programs[id] = new Program(this.gl, fsUrl, vsUrl);
+    public createProgram(fragmentShaderUrl: string, vertexShaderUrl: string, id: string) {
+        this.programs[id] = new Program(this.gl, fragmentShaderUrl, vertexShaderUrl);
     }
 
     public getProgram(id: string): WebGLProgram {

@@ -18,7 +18,7 @@ export class Scene {
     }
 
     public add3dSurface(id: string) {
-        this.surfaces[id] = new Surface3d();
+        this.surfaces[id] = new Surface3d(this.application.width, this.application.height, id);
     }
 
     public add2dSurface(id: string) {
@@ -27,5 +27,9 @@ export class Scene {
 
     public getContext(id: string) {
         return this.surfaces[id].getContext();
+    }
+
+    public clear(id: string) {
+        this.surfaces[id].clear();
     }
 }
