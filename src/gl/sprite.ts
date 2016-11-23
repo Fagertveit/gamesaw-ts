@@ -87,4 +87,32 @@ export class Sprite {
 
         renderer.addCall(renderCall);
     }
+
+    public renderAngleScale(renderer: Renderer2d, x: number, y: number, angle: number, scale: number): void {
+        let vec: Vector2[] = [];
+        let px: number = x + ((this.width * scale) / 2);
+        let py: number = y + ((this.height * scale) / 2);
+
+        vec[0] = new Vector2(x, y);
+        vec[1] = new Vector2(x + (this.width * scale), y);
+        vec[2] = new Vector2(x, y + (this.height * scale));
+        vec[3] = new Vector2(x + (this.width * scale), y + (this.height * scale));
+
+        for (let vector in vec) {
+            vec[vector] = vec[vector].rotatePivot(px, py, degreeToRadian(angle));
+        }
+
+        let renderCall: RenderCall = new RenderCall();
+
+        renderCall.texture = this.texture.texture;
+        renderCall.vertices = [vec[0].x, vec[0].y,
+            vec[1].x, vec[1].y,
+            vec[2].x, vec[2].y,
+            vec[3].x, vec[3].y];
+        renderCall.uvs = [this.uv[0], this.uv[1], this.uv[2], this.uv[1], this.uv[0], this.uv[3], this.uv[2], this.uv[3]];
+        renderCall.indices = [0, 1, 2, 1, 2, 3];
+        renderCall.numIndices = 6;
+
+        renderer.addCall(renderCall);
+    }
 }
