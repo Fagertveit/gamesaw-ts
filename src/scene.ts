@@ -1,5 +1,6 @@
 import { Surface2d } from './graphics/surface2d';
 import { Surface3d } from './graphics/surface3d';
+import { Color } from './graphics/color';
 import { Application } from './application';
 
 interface SurfaceList {
@@ -29,7 +30,11 @@ export class Scene {
         return this.surfaces[id].getContext();
     }
 
-    public clear(id: string) {
-        this.surfaces[id].clear();
+    public clear(id: string, color?: Color) {
+        if (color) {
+            this.surfaces[id].clear(color);
+        } else {
+            this.surfaces[id].clear();
+        }
     }
 }

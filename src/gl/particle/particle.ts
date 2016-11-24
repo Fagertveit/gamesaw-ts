@@ -13,6 +13,7 @@ export class Particle {
         this.dir = direction;
         this.size = size;
         this.vel = velocity;
+        this.life = life;
         this.alpha = alpha;
     }
 
@@ -21,8 +22,8 @@ export class Particle {
         this.size += growth;
         this.dir.y += gravity;
         this.dir.x += wind;
-        this.pos.x += (this.dir.x * this.dir.x);
-        this.pos.y += (this.dir.x * this.dir.y);
+        this.pos.x += (this.dir.x * this.vel);
+        this.pos.y += (this.dir.x * this.vel);
     }
 
     public isDead(): boolean {

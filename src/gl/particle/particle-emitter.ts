@@ -50,6 +50,30 @@ export class ParticleEmitter {
         this.http = new Http(false);
     }
 
+    public setup(texture: Texture, position: Point, maxDirection: Point, minDirection: Point, maxVelocity: number, minVelocity: number,
+        maxSize: number, minSize: number, maxLife: number, minLife: number, growth: number, gravity: number, wind: number,
+        angularVelocity: number, lifeCycle: number, particlesPerSecond: number, particlesAtStart: number, constant: boolean, color: Color): void {
+        this.texture = texture;
+        this.pos = position;
+        this.maxDir = maxDirection;
+        this.minDir = minDirection;
+        this.maxVel = maxVelocity;
+        this.minVel = minVelocity;
+        this.maxSize = maxSize;
+        this.minSize = minSize;
+        this.maxLife = maxLife;
+        this.minLife = minLife;
+        this.growth = growth;
+        this.gravity = gravity;
+        this.wind = wind;
+        this.angularVel = angularVelocity;
+        this.lifeCycle = lifeCycle;
+        this.particlesPerSecond = particlesPerSecond;
+        this.particlesAtStart = particlesAtStart;
+        this.constant = constant;
+        this.color = color;
+    }
+
     public load(url: string) {
         this.http.get(url, (data: AJAXResponse) => {
             let emitter = JSON.parse(data.responseText);

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameSaw Game Library</title>
+    <script src="../../dist/gamesaw.js"></script>
+    <style>
+        .container {
+            width: 640px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GameSaw Game Library</h1>
+        <div id="gamesaw-container">
+
+        </div>
+    </div>
+
+<script>
+    var app = new gamesaw.Application(640, 480, 10);
+    var testScene = app.sceneManager.addScene('test');
+    testScene.add3dSurface('test');
+    var ctx = testScene.getContext('test');
+    ctx.clearColor(0.0, 0.0, 0.0, 1.0);
+    var renderer = new gamesaw.GL.Particle.ParticleRenderer(ctx);
+    var texture = new gamesaw.GL.Texture(ctx, '../img/alpha_particle.png');
+    var emitter = new gamesaw.GL.Particle.ParticleEmitter(ctx);
+
+    emitter.setup(
+        texture,
+        new gamesaw.Geometry.Point(320, 240),
+        new gamesaw.Geometry.Point(0.5, 0.5), new gamesaw.Geometry.Point(0.5, 0.5),
+        0.8, 0.4,
+        32, 16,
+        1000, 800,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        100,
+        0,
+        true,
+        new gamesaw.Graphics.Color(240, 175, 25, 0.4)
+    );
+    emitter.update(1000);
+
+    testScene.render = function(delta) {
+        if (texture.ready) {
+            renderer.render(emitter);
+        }
+    };
+    testScene.update = function(delta) {
+        emitter.update(delta);
+    };
+
+    app.start();
+</script>
+</body>
+</html>

@@ -81,7 +81,7 @@ export class Color {
     }
 
     public getRGBAFloat(): number[] {
-        return [ this.toFloat(this.rgb[RGBA.RED]), this.toFloat(this.rgb[RGBA.GREEN]), this.toFloat(this.rgb[RGBA.BLUE]), this.toFloat(this.alpha) ];
+        return [ this.toFloat(this.rgb[RGBA.RED]), this.toFloat(this.rgb[RGBA.GREEN]), this.toFloat(this.rgb[RGBA.BLUE]), this.alpha ];
     }
 
     public RGBtoHSL(): void {

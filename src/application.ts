@@ -17,6 +17,10 @@ export class Application {
         this.width = width;
         this.height = height;
 
+        if (targetFps) {
+            this.targetFps = targetFps;
+        }
+
         this.sceneManager = new SceneManager(this);
     }
 

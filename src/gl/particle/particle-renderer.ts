@@ -62,6 +62,7 @@ export class ParticleRenderer {
         let gl = this.gl;
 
         gl.useProgram(this.program.program);
+
         gl.enable(gl.BLEND);
         gl.blendFunc(emitter.blendSrc, emitter.blendDst);
 

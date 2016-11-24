@@ -82,6 +82,7 @@ export class Renderer2d {
 
     public flush(): void {
         let gl = this.gl;
+        gl.useProgram(this.program.program);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.uniform2f(this.resolution, this.width, this.height);
