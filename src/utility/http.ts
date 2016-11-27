@@ -1,3 +1,7 @@
+export interface AJAXResponse {
+    responseText?: string;
+}
+
 export class Http {
     public async: boolean = false;
 
