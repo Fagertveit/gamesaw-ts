@@ -19,19 +19,20 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(800, 600, 30);
+    var app = new gamesaw.Application(800, 600, 1);
     var testScene = app.sceneManager.addScene('test');
     testScene.add3dSurface('test');
     var ctx = testScene.getContext('test');
+    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
     ctx.clearColor(0, 0, 0, 1);
 
-    var fontRenderer = new gamesaw.GL.Font.FontRenderer(ctx);
-    var font = new gamesaw.GL.Font.Font(ctx, 'default.xml');
+    var tilemap = new gamesaw.GL.Tilemap.Tilemap(ctx);
+    tilemap.loadTiledMap('basic.json');
 
     testScene.render = function(delta) {
         this.clear('test');
-        font.drawString(fontRenderer, "Detta är en sträng", 100, 200);
-        fontRenderer.execute();
+        tilemap.render(renderer, 10, 10);
+        renderer.execute();
     };
     testScene.update = function(delta) {
 

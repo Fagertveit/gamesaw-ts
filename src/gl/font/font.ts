@@ -128,7 +128,7 @@ export class Font {
             if (this.font.glyphs[id]) {
                 let glyph = this.font.glyphs[id];
 
-                this.renderGlyph(renderer, currentX + glyph.xOffset, currentY + glyph.yOffset, glyph);
+                this.renderGlyph(renderer, currentX + glyph.xOffset, y + glyph.yOffset, glyph);
                 currentX += glyph.xAdvance;
             }
         }
