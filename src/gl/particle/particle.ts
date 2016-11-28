@@ -23,7 +23,7 @@ export class Particle {
         this.dir.y += gravity;
         this.dir.x += wind;
         this.pos.x += (this.dir.x * this.vel);
-        this.pos.y += (this.dir.x * this.vel);
+        this.pos.y += (this.dir.y * this.vel);
     }
 
     public isDead(): boolean {

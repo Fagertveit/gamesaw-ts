@@ -5,7 +5,7 @@
     <script src="../../dist/gamesaw.js"></script>
     <style>
         .container {
-            width: 640px;
+            width: 800px;
             margin: 10px auto;
         }
     </style>
@@ -19,7 +19,7 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(640, 480, 30);
+    var app = new gamesaw.Application(800, 600, 30);
     var testScene = app.sceneManager.addScene('test');
     testScene.add3dSurface('test');
     var ctx = testScene.getContext('test');
@@ -32,45 +32,20 @@
     var scaleUp = true;
     sprite.setUV(0.0, 0.0, 1.0, 1.0);
 
-    var particleRenderer = new gamesaw.GL.Particle.ParticleRenderer(ctx);
-    var particle = new gamesaw.GL.Texture(ctx, '../img/alpha_particle.png');
-    var emitter = new gamesaw.GL.Particle.ParticleEmitter(ctx);
-
-    emitter.setup(
-        particle,
-        new gamesaw.Geometry.Point(320, 240),
-        new gamesaw.Geometry.Point(-0.3, -0.8), new gamesaw.Geometry.Point(0.3, -0.7),
-        10.0, 6.4,
-        32, 16,
-        2000, 800,
-        0.2,
-        0.0,
-        0.0,
-        0.0,
-        0,
-        1000,
-        0,
-        true,
-        new gamesaw.Graphics.Color(240, 175, 25, 0.4)
-    );
-
     testScene.render = function(delta) {
         this.clear('test');
         if (texture.ready) {
-            /*
-            for (var i = 0; i < 1000; i++) {
+            /*for (var i = 0; i < 1000; i++) {
                 var x = Math.random() * 640;
                 var y = Math.random() * 480;
 
                 sprite.render(renderer, x, y);
             }*/
-            //sprite.renderAngleScale(renderer, 300, 200, angle, scale);
+            sprite.renderAngleScale(renderer, 300, 200, angle, scale);
 
-            //sprite.renderScale(renderer, 400, 100, scale);
+            sprite.renderScale(renderer, 400, 100, scale);
         }
         renderer.execute();
-
-        particleRenderer.render(emitter);
     };
     testScene.update = function(delta) {
         angle += 5;
@@ -87,8 +62,6 @@
         } else {
             scale -= 0.2;
         }
-
-        emitter.update(delta);
     };
 
     app.init();
