@@ -28,9 +28,22 @@
     var fontRenderer = new gamesaw.GL.Font.FontRenderer(ctx);
     var font = new gamesaw.GL.Font.Font(ctx, '../data/default.xml');
 
+    var mouse = new gamesaw.Input.Mouse();
+    var keyboard = new gamesaw.Input.Keyboard();
+
+    var keyEnum = gamesaw.Input.Key;
+
     testScene.render = function(delta) {
         this.clear('test');
-        font.drawString(fontRenderer, "Detta är en sträng", 100, 200);
+        font.drawString(fontRenderer, "Mouse coordinates | x: " + mouse.x + ", y: " + mouse.y, 10, 10);
+        font.drawString(fontRenderer, "Mouse left button: " + mouse.button[0], 10, 50);
+        font.drawString(fontRenderer, "Mouse middle button: " + mouse.button[1], 10, 90);
+        font.drawString(fontRenderer, "Mouse right button: " + mouse.button[2], 10, 130);
+        
+        font.drawString(fontRenderer, "W: " + keyboard.keys[keyEnum['W']], 10, 200);
+        font.drawString(fontRenderer, "A: " + keyboard.keys[keyEnum['A']], 10, 240);
+        font.drawString(fontRenderer, "S: " + keyboard.keys[keyEnum['S']], 10, 280);
+        font.drawString(fontRenderer, "D: " + keyboard.keys[keyEnum['D']], 10, 320);
         fontRenderer.execute();
     };
     testScene.update = function(delta) {

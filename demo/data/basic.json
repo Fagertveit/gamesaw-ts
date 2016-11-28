@@ -21,7 +21,7 @@
         {
          "columns":4,
          "firstgid":1,
-         "image":"tileset02.png",
+         "image":"../img/tileset02.png",
          "imageheight":64,
          "imagewidth":64,
          "margin":0,
