@@ -21,14 +21,14 @@ const vertexShader: string = 'attribute vec2 a_position;\n' +
  *  Copyright (c) 2015 Guilherme R. Lampert.
  * ===========================================================
  */
-const glowFragmentShader = 'precision mediump float;\n' +
+const blurFragmentShader = 'precision mediump float;\n' +
 'uniform vec2  u_texel_size;\n' +
 'uniform float u_blur_amount;\n' +
 'uniform float u_blur_scale;\n' +
 'uniform float u_blur_strength;\n' +
-'uniform bool u_horizontal;\n' +
+'uniform int u_horizontal;\n' +
 'uniform sampler2D u_color_texture;\n' +
-'varying vec2 v_texcoords;\n' +
+'varying vec2 v_texCoord;\n' +
 'const float BLUR_PASSES = 20.0;\n' +
 'float gaussian(float x, float deviation) {\n' +
 '	return (1.0 / sqrt(6.28318530718 * deviation)) * exp(-((x * x) / (2.0 * deviation)));\n' +
@@ -39,17 +39,17 @@ const glowFragmentShader = 'precision mediump float;\n' +
 '	float strength = 1.0 - u_blur_strength;\n' +
 '	float deviation = half_blur * 0.35;\n' +
 '	deviation *= deviation;\n' +
-'   if (horizontal) {\n' +
+'   if (u_horizontal == 1) {\n' +
 '	    for (float i = 0.0; i < BLUR_PASSES; i += 1.0) {\n' +
 '		    float offset = i - half_blur;\n' +
-'		    vec4 tex_color = texture2D(u_color_texture, v_texcoords +\n' +
+'		    vec4 tex_color = texture2D(u_color_texture, v_texCoord +\n' +
 '			    vec2(offset * u_texel_size.x * u_blur_scale, 0.0)) * gaussian(offset * strength, deviation);\n' +
 '		    color += tex_color;\n' +
 '	    }\n' +
 '   } else {\n' +
 '       for (float i = 0.0; i < BLUR_PASSES; i += 1.0) {\n' +
 '            float offset = i - half_blur;\n' +
-'            vec4 tex_color = texture2D(u_color_texture, v_texcoords +\n' +
+'            vec4 tex_color = texture2D(u_color_texture, v_texCoord +\n' +
 '                vec2(0.0, offset * u_texel_size.y * u_blur_scale)) * gaussian(offset * strength, deviation);\n' +
 '            color += tex_color;\n' +
 '        }\n' +
@@ -58,43 +58,13 @@ const glowFragmentShader = 'precision mediump float;\n' +
 '	gl_FragColor.w = 1.0;\n' +
 '}';
 
-/* Combine fragment shader
- * ===========================================================
- * GLSL Fragment Shader
- *  This source code is released under the MIT License.
- *  Copyright (c) 2015 Guilherme R. Lampert.
- * ===========================================================
- */
-const combineFragmentShader = 'precision mediump float;\n' +
-'uniform float u_blend_mode;\n' +
-'uniform sampler2D u_scene_texture;\n' +
-'uniform sampler2D u_glow_texture;\n' +
-'varying vec2 v_texcoords;\n' +
-'const float ADDITIVE_BLENDING = 1.0;\n' +
-'const float SCREEN_BLENDING   = 2.0;\n' +
-'void main() {\n' +
-'	vec4 dst = texture2D(u_scene_texture, v_texcoords); // Rendered scene (tmu:0)\n' +
-'	vec4 src = texture2D(u_glow_texture,  v_texcoords); // Glow map       (tmu:1)\n' +
-'	if (u_blend_mode == ADDITIVE_BLENDING) {\n' +
-'		// Additive blending (strong result, high overexposure).\n' +
-'		gl_FragColor = min(src + dst, 1.0);\n' +
-'	} else if (u_blend_mode == SCREEN_BLENDING) {\n' +
-'		// Screen blending (mild result, medium overexposure).\n' +
-'		gl_FragColor = clamp((src + dst) - (src * dst), 0.0, 1.0);\n' +
-'	} else {\n' +
-'		// Show the glow map instead (DISPLAY_GLOWMAP).\n' +
-'		gl_FragColor = src;\n' +
-'	}\n' +
-'	gl_FragColor.w = 1.0;\n' +
-'}';
-
 export class Blur {
     public gl: WebGLRenderingContext;
     public horizontalFBO: FrameBuffer;
     public verticalFBO: FrameBuffer;
+    public texture: WebGLTexture;
 
     public blurProgram: Program;
-    public combinationProgram: Program;
     public resolution: WebGLUniformLocation;
     public texelSize: WebGLUniformLocation;
     public blurAmount: WebGLUniformLocation;
@@ -107,24 +77,27 @@ export class Blur {
     public indexBuffer: WebGLBuffer;
     public texCoordBuffer: WebGLBuffer;
 
-    constructor(gl: WebGLRenderingContext) {
+    public width: number;
+    public height: number;
+
+    constructor(gl: WebGLRenderingContext, width: number, height: number) {
         this.gl = gl;
+        this.width = width;
+        this.height = height;
 
         this.blurProgram = new Program(this.gl);
         this.blurProgram.loadShader(ShaderType.VERTEX, vertexShader);
-        this.blurProgram.loadShader(ShaderType.FRAGMENT, glowFragmentShader);
+        this.blurProgram.loadShader(ShaderType.FRAGMENT, blurFragmentShader);
         this.blurProgram.createProgram();
-
-        this.combinationProgram = new Program(this.gl);
-        this.combinationProgram.loadShader(ShaderType.VERTEX, vertexShader);
-        this.combinationProgram.loadShader(ShaderType.FRAGMENT, combineFragmentShader);
-        this.combinationProgram.createProgram();
 
         this.init();
     }
 
     public init(): void {
         let gl = this.gl;
+
+        this.horizontalFBO = new FrameBuffer(gl, this.width, this.height);
+        this.verticalFBO = new FrameBuffer(gl, this.width, this.height);
 
         this.texelSize = gl.getUniformLocation(this.blurProgram.program, 'u_texel_size');
         this.blurAmount = gl.getUniformLocation(this.blurProgram.program, 'u_blur_amount');
@@ -139,5 +112,67 @@ export class Blur {
         this.vertexBuffer = gl.createBuffer();
         this.indexBuffer = gl.createBuffer();
         this.texCoordBuffer = gl.createBuffer();
+    }
+
+    public execute(texture: WebGLTexture): WebGLTexture {
+        let gl = this.gl;
+        this.texture = texture;
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.horizontalFBO.fbo);
+
+        this.render(true, this.texture);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.verticalFBO.fbo);
+
+        this.render(false, this.horizontalFBO.texture);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+        return this.verticalFBO.texture;
+    }
+
+    public render(horizontal: boolean, texture: WebGLTexture): void {
+        let gl = this.gl;
+
+        let vertices = [0, 0, this.width, 0, 0, this.height, this.width, this.height];
+        let uvs = [
+            0, 0,
+            1, 0,
+            0, 1,
+            1, 1
+        ];
+        let indices = [0, 1, 2, 1, 2, 3];
+        let numIndices = 6;
+
+        gl.useProgram(this.blurProgram.program);
+
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform2fv(this.texelSize, [(1.0 / this.width), (1.0 / this.height)]);
+        gl.uniform1f(this.blurAmount, 15.0);
+        gl.uniform1f(this.blurScale, 1.0);
+        gl.uniform1f(this.blurStrength, 0.1);
+
+        if (horizontal) {
+            gl.uniform1i(this.horizontal, 1);
+        } else {
+            gl.uniform1i(this.horizontal, 0);
+        }
+
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.position);
+        gl.vertexAttribPointer(this.position, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.textureCoordinates);
+        gl.vertexAttribPointer(this.textureCoordinates, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+        gl.drawElements(gl.TRIANGLES, numIndices, gl.UNSIGNED_SHORT, 0);
     }
 }

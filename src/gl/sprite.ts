@@ -115,4 +115,16 @@ export class Sprite {
 
         renderer.addCall(renderCall);
     }
+
+    public renderFBO(renderer: Renderer2d) {
+        let renderCall: RenderCall = new RenderCall();
+
+        renderCall.texture = this.texture.texture;
+        renderCall.vertices = [0, this.height, this.width, this.height, 0, 0, this.width, 0];
+        renderCall.uvs = [this.uv[0], this.uv[1], this.uv[2], this.uv[1], this.uv[0], this.uv[3], this.uv[2], this.uv[3]];
+        renderCall.indices = [0, 1, 2, 1, 2, 3];
+        renderCall.numIndices = 6;
+
+        renderer.addCall(renderCall);
+    }
 }

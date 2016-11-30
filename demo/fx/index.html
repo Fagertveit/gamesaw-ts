@@ -19,13 +19,14 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(800, 600, 30);
+    var app = new gamesaw.Application(800, 600, 10);
     var testScene = app.sceneManager.addScene('test');
     testScene.add3dSurface('test');
     var gl = testScene.getContext('test');
     gl.clearColor(0, 0, 0, 1);
     var renderer = new gamesaw.GL.Render2d.Renderer2d(gl);
     var frameBuffer = new gamesaw.GL.Render2d.FrameBuffer(gl, 1024, 1024);
+
     var texture = new gamesaw.GL.Texture(gl, '../img/pixel.png');
     var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
     var scale = 1.0;
@@ -33,32 +34,88 @@
     var scaleUp = true;
     sprite.setUV(0.0, 0.0, 1.0, 1.0);
 
+    var blur = new gamesaw.GL.FX.Blur(gl, 1024, 1024);
+    var renderTarget = 'blur';
+
     testScene.render = function(delta) {
-        if (texture.ready) {
-            sprite.renderAngleScale(renderer, 300, 200, angle, scale);
+        if (renderTarget === 'clean') {
+            // Render clean
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-            sprite.renderScale(renderer, 400, 100, scale);
+            if (texture.ready) {
+                sprite.renderScale(renderer, 100, 100, 5);
+            }
+
+            renderer.execute();
+        } else if (renderTarget === 'fbo') {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            if (texture.ready) {
+                sprite.renderScale(renderer, 100, 100, 5);
+            }
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer.fbo);
+            renderer.flipY = 1;
+            renderer.execute();
+            renderer.flipY = 0;
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+            this.clear('test');
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            var fboTexture = new gamesaw.GL.Texture(gl);
+            fboTexture.texture = frameBuffer.texture;
+            fboTexture.width = 1024;
+            fboTexture.height = 1024;
+            fboTexture.ready = true;
+            var fboSprite = new gamesaw.GL.Sprite(fboTexture, 1024, 1024);
+            //fboSprite.setUV(0, 1, 1, 0)
+            fboSprite.uv = [0, 0, 1, 1];
+
+            fboSprite.render(renderer, 0, 0);
+            renderer.execute();
+
+        } else if (renderTarget === 'blur') {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            if (texture.ready) {
+                sprite.renderScale(renderer, 100, 100, 5);
+            }
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer.fbo);
+            renderer.flipY = 1;
+            renderer.execute();
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            let blurTexture = blur.execute(frameBuffer.texture);
+
+            renderer.flipY = 0;
+            this.clear('test');
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+            var fboTexture = new gamesaw.GL.Texture(gl);
+            fboTexture.texture = blurTexture;
+            fboTexture.width = 1024;
+            fboTexture.height = 1024;
+            fboTexture.ready = true;
+            var fboSprite = new gamesaw.GL.Sprite(fboTexture, 1024, 1024);
+            fboSprite.setUV(0, 0, 1, 1);
+            fboSprite.render(renderer, 0, 0);
+            renderer.execute();
         }
-        gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer.fbo);
-        this.clear('test');
-        gl.clearColor(0, 0, 0, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        renderer.execute();
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-        this.clear('test');
-        gl.clearColor(0, 0, 0, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-        var fboTexture = new gamesaw.GL.Texture(gl);
-        fboTexture.texture = frameBuffer.texture;
-        fboTexture.width = 1024;
-        fboTexture.height = 1024;
-        fboTexture.ready = true;
-        var fboSprite = new gamesaw.GL.Sprite(fboTexture, 400, 300);
-        fboSprite.setUVByPixels(0, 0, 800, 600);
-        fboSprite.render(renderer, 0, 0);
-        renderer.execute();
     };
     testScene.update = function(delta) {
         angle += 5;

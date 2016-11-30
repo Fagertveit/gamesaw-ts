@@ -5,11 +5,16 @@ const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
 'varying vec2 v_texCoord;\n' +
 'uniform vec2 u_resolution;\n' +
+'uniform int u_flip;\n' +
 'void main() {\n' +
 '	vec2 zeroToOne = a_position / u_resolution;\n' +
 '	vec2 zeroToTwo = zeroToOne * 2.0;\n' +
 '	vec2 clipSpace = zeroToTwo - 1.0;\n' +
-'	gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\n' +
+'   if (u_flip == 1) {\n' +
+'       gl_Position = vec4(clipSpace * vec2(1, 1), 0, 1);\n' +
+'	} else {\n' +
+'       gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\n' +
+'   }\n' +
 '	v_texCoord = a_texCoord;\n' +
 '}\n';
 
@@ -29,6 +34,7 @@ export class Renderer2d {
     public gl: WebGLRenderingContext;
     public program: Program;
     public resolution: WebGLUniformLocation;
+    public flip: WebGLUniformLocation;
     public position: number;
     public textureCoordinates: number;
     public vertexBuffer: WebGLBuffer;
@@ -36,6 +42,7 @@ export class Renderer2d {
     public texCoordBuffer: WebGLBuffer;
     public width: number = 800;
     public height: number = 600;
+    public flipY: number = 0;
 
     public renderCalls: RenderCalls = {};
 
@@ -54,6 +61,7 @@ export class Renderer2d {
         let gl = this.gl;
 
         this.resolution = gl.getUniformLocation(this.program.program, 'u_resolution');
+        this.flip = gl.getUniformLocation(this.program.program, 'u_flip');
         this.position = gl.getAttribLocation(this.program.program, 'a_position');
         this.textureCoordinates = gl.getAttribLocation(this.program.program, 'a_texCoord');
 
@@ -86,6 +94,7 @@ export class Renderer2d {
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform1i(this.flip, this.flipY);
 
         for (let call in this.renderCalls) {
             gl.bindTexture(gl.TEXTURE_2D, this.renderCalls[call].texture);
