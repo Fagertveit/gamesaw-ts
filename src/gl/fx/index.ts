@@ -1,3 +1,4 @@
 import { Blur } from './blur';
+import { Bloom } from './bloom';
 
-export { Blur }
+export { Blur, Bloom }

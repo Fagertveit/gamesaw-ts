@@ -55,7 +55,6 @@ const blurFragmentShader = 'precision mediump float;\n' +
 '        }\n' +
 '   }\n' +
 '	gl_FragColor = clamp(color, 0.0, 1.0);\n' +
-'	gl_FragColor.w = 1.0;\n' +
 '}';
 
 export class Blur {
@@ -116,11 +115,10 @@ export class Blur {
 
     public execute(texture: WebGLTexture): WebGLTexture {
         let gl = this.gl;
-        this.texture = texture;
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.horizontalFBO.fbo);
 
-        this.render(true, this.texture);
+        this.render(true, texture);
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.verticalFBO.fbo);
 
@@ -147,11 +145,12 @@ export class Blur {
         gl.useProgram(this.blurProgram.program);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform2f(this.resolution, 800, 600);
         gl.uniform2fv(this.texelSize, [(1.0 / this.width), (1.0 / this.height)]);
-        gl.uniform1f(this.blurAmount, 15.0);
+        // gl.uniform2fv(this.texelSize, [1, 1]);
+        gl.uniform1f(this.blurAmount, 35.0);
         gl.uniform1f(this.blurScale, 1.0);
-        gl.uniform1f(this.blurStrength, 0.1);
+        gl.uniform1f(this.blurStrength, 0.2);
 
         if (horizontal) {
             gl.uniform1i(this.horizontal, 1);
