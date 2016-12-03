@@ -27,7 +27,11 @@ export class Texture {
     public load(url: string) {
         let _this = this;
         let gl = this.gl;
-        this.resourceManager.addImage();
+
+        if (this.resourceManager) {
+            this.resourceManager.addImage();
+        }
+
         this.image = new Image();
         this.image.src = url;
         this.texture = gl.createTexture();
