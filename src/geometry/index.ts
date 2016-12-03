@@ -12,16 +12,5 @@ import { BSpline } from './bspline';
 import { Renderer, render } from './renderer';
 import { Collider, intersects } from './collision';
 
-export { GeometricEnum, GeometricName, GeometricObject } from './geometry';
-export { Vector2 } from './vector2d';
-export { Point } from './point';
-export { Vector3 } from './vector3d';
-export { Line } from './line';
-export { Circle } from './circle';
-export { Rectangle } from './rectangle';
-export { AABB } from './aabb';
-export { Polygon } from './polygon';
-export { Bezier } from './bezier';
-export { BSpline } from './bspline';
-export { Renderer, render } from './renderer';
-export { Collider, intersects } from './collision';
+export { GeometricEnum, GeometricName, GeometricObject, Vector2, Point, Vector3,
+    Line, Circle, Rectangle, AABB, Polygon, Bezier, BSpline, Renderer, render, Collider, intersects }

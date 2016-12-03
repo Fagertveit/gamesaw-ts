@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameSaw Game Library</title>
+    <script src="../../dist/gamesaw.js"></script>
+    <style>
+        .container {
+            width: 800px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GameSaw Game Library</h1>
+        <div id="gamesaw-container">
+
+        </div>
+    </div>
+
+<script>
+    var app = new gamesaw.Application(800, 600, 30);
+    var testScene = app.sceneManager.addScene('test');
+    testScene.add3dSurface('test');
+    var ctx = testScene.getContext('test');
+    ctx.clearColor(0, 0, 0, 1);
+    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
+    //var sample = new gamesaw.Audio.Sample('../data/Ana2.wav');
+    //var track = new gamesaw.Audio.Track('../data/Blutsturm.mp3');
+
+    var played = false;
+
+    testScene.render = function(delta) {
+
+    };
+    testScene.update = function(delta) {
+        /*if (track.loaded && !played) {
+            track.play();
+            played = true;
+        }*/
+    };
+
+    app.init();
+</script>
+</body>
+</html>

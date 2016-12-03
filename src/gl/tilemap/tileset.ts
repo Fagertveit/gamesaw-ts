@@ -1,9 +1,11 @@
 import { Texture } from '../texture';
 import { Renderer2d } from '../renderer2d/renderer2d';
 import { RenderCall } from '../renderer2d/render-call';
+import { ResourceManager } from '../../utility/resource-manager';
 
 export class Tileset {
     public gl: WebGLRenderingContext;
+    private resourceManager: ResourceManager;
     public texture: Texture;
     public name: string;
     public image: string;
@@ -18,7 +20,7 @@ export class Tileset {
     public tileHeight: number;
 
     constructor(gl: WebGLRenderingContext, name: string, image: string, imageWidth: number, imageHeight: number, firstgid: number,
-        margin: number, spacing: number, columns: number, tileCount: number, tileWidth: number, tileHeight: number) {
+        margin: number, spacing: number, columns: number, tileCount: number, tileWidth: number, tileHeight: number, resourceManager?: ResourceManager) {
         this.gl = gl;
         this.name = name;
         this.image = image;
@@ -32,7 +34,12 @@ export class Tileset {
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
 
-        this.texture = new Texture(this.gl, this.image);
+        if (resourceManager) {
+            this.resourceManager = resourceManager;
+            this.texture = new Texture(this.gl, this.image, this.resourceManager);
+        } else {
+            this.texture = new Texture(this.gl, this.image);
+        }
     }
 
     public renderTile(renderer: Renderer2d, x: number, y: number, id: number): void {

@@ -1,6 +1,7 @@
 import { Texture } from '../texture';
 import { Color } from '../../graphics/color';
 import { Http, AJAXResponse } from '../../utility/http';
+import { ResourceManager } from '../../utility/resource-manager';
 import { FontRenderer } from './font-renderer';
 import { RenderCall } from '../renderer2d/render-call';
 import { BitmapFont, Glyph } from './bitmap-font';
@@ -17,6 +18,7 @@ const enum Align {
 
 export class Font {
     public gl: WebGLRenderingContext;
+    public resourceManager: ResourceManager;
     public texturePage: FontTexture = {};
     public font: BitmapFont = new BitmapFont();
     public base: number = 0;
@@ -26,9 +28,14 @@ export class Font {
     public align: number = Align.LEFT;
     private http: Http;
 
-    constructor(gl: WebGLRenderingContext, configUrl?: string) {
+    constructor(gl: WebGLRenderingContext, configUrl?: string, resourceManager?: ResourceManager) {
         this.gl = gl;
         this.http = new Http(false);
+
+        if (resourceManager) {
+            this.resourceManager = resourceManager;
+        }
+
         if (configUrl) {
             this.configUrl = configUrl;
 
@@ -38,6 +45,10 @@ export class Font {
 
     public load(configUrl: string): void {
         let _this = this;
+
+        if (this.resourceManager) {
+            this.resourceManager.addOther();
+        }
 
         this.http.get(configUrl, (data: XMLHttpRequest) => {
             _this.parseConfig(data.responseXML);
@@ -107,6 +118,10 @@ export class Font {
                 page: +char[i].getAttribute('page'),
                 channel: +char[i].getAttribute('chnl')
             };
+        }
+
+        if (this.resourceManager) {
+            this.resourceManager.otherReady();
         }
     }
 

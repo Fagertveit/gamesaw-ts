@@ -2,6 +2,7 @@ import { TilemapLayer } from './tilemap-layer';
 import { Tileset } from './tileset';
 import { Color } from '../../graphics/color';
 import { Http, AJAXResponse } from '../../utility/http';
+import { ResourceManager } from '../../utility/resource-manager';
 import { Renderer2d } from '../renderer2d/renderer2d';
 
 export interface Tiled {
@@ -47,6 +48,7 @@ export interface TiledLayer {
 
 export class Tilemap {
     public gl: WebGLRenderingContext;
+    private resourceManager: ResourceManager;
     public layers: TilemapLayer[] = [];
     public tilesets: Tileset[] = [];
     public width: number;
@@ -61,9 +63,13 @@ export class Tilemap {
 
     private http: Http;
 
-    constructor(gl?: WebGLRenderingContext) {
+    constructor(gl?: WebGLRenderingContext, resourceManager?: ResourceManager) {
         if (gl) {
             this.gl = gl;
+        }
+
+        if (resourceManager) {
+            this.resourceManager = resourceManager;
         }
 
         this.http = new Http(false);
@@ -71,6 +77,10 @@ export class Tilemap {
 
     public loadTiledMap(url: string) {
         let _this = this;
+
+        if (this.resourceManager) {
+            this.resourceManager.addOther();
+        }
 
         this.http.get(url, (data: AJAXResponse) => {
             _this.parseTiledMap(data.responseText);
@@ -104,21 +114,41 @@ export class Tilemap {
         }
 
         for (let tileset of map.tilesets) {
-            this.tilesets.push(new Tileset(
-                this.gl,
-                tileset.name,
-                tileset.image,
-                tileset.imagewidth,
-                tileset.imageheight,
-                tileset.firstgid,
-                tileset.margin,
-                tileset.spacing,
-                tileset.columns,
-                tileset.tilecount,
-                tileset.tilewidth,
-                tileset.tileheight
-            ));
+            if (this.resourceManager) {
+                this.tilesets.push(new Tileset(
+                    this.gl,
+                    tileset.name,
+                    tileset.image,
+                    tileset.imagewidth,
+                    tileset.imageheight,
+                    tileset.firstgid,
+                    tileset.margin,
+                    tileset.spacing,
+                    tileset.columns,
+                    tileset.tilecount,
+                    tileset.tilewidth,
+                    tileset.tileheight,
+                    this.resourceManager
+                ));
+            } else {
+                this.tilesets.push(new Tileset(
+                    this.gl,
+                    tileset.name,
+                    tileset.image,
+                    tileset.imagewidth,
+                    tileset.imageheight,
+                    tileset.firstgid,
+                    tileset.margin,
+                    tileset.spacing,
+                    tileset.columns,
+                    tileset.tilecount,
+                    tileset.tilewidth,
+                    tileset.tileheight
+                ));
+            }
         }
+
+        this.resourceManager.otherReady();
     }
 
     public render(renderer: Renderer2d, x: number, y: number) {

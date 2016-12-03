@@ -1,4 +1,5 @@
 import { Http } from '../../utility/http';
+import { ResourceManager } from '../../utility/resource-manager';
 
 interface AJAXResponse {
     responseText?: string;
@@ -15,10 +16,15 @@ export class Program {
     public program: WebGLProgram;
     public gl: WebGLRenderingContext;
     private http: Http;
+    private resourceManager: ResourceManager;
 
-    constructor(gl: WebGLRenderingContext, fragmentShaderUrl?: string, vertexShaderUrl?: string) {
+    constructor(gl: WebGLRenderingContext, fragmentShaderUrl?: string, vertexShaderUrl?: string, resourceManager?: ResourceManager) {
         this.gl = gl;
         this.http = new Http(false);
+
+        if (resourceManager) {
+            this.resourceManager = resourceManager;
+        }
 
         if (fragmentShaderUrl && vertexShaderUrl) {
             this.initShader(fragmentShaderUrl, vertexShaderUrl);
@@ -69,11 +75,19 @@ export class Program {
             throw new Error('Unable to initialize the shader program.');
         }
 
+        if (this.resourceManager) {
+            this.resourceManager.otherReady();
+        }
+
         this.gl.useProgram(this.program);
     }
 
     public initShader(fsUrl: string, vsUrl: string): void {
         let _this = this;
+
+        if (this.resourceManager) {
+            this.resourceManager.addOther();
+        }
 
         this.http.get(fsUrl, (data: AJAXResponse) => {
             _this.loadShader(ShaderType.FRAGMENT, data.responseText);

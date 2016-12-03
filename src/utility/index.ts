@@ -1,7 +1,6 @@
 import { degreeToRadian, radianToDegree } from './angle';
 import { Http } from './http';
 import { PI, capitalize } from './utility';
+import { ResourceManager } from './resource-manager';
 
-export { degreeToRadian, radianToDegree } from './angle';
-export { Http } from './http';
-export { PI, capitalize } from './utility';
+export { ResourceManager, degreeToRadian, radianToDegree, Http, PI, capitalize }

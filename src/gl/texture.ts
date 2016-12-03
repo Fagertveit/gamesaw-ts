@@ -1,5 +1,8 @@
+import { ResourceManager } from '../utility/resource-manager';
+
 export class Texture {
     private gl: WebGLRenderingContext;
+    private resourceManager: ResourceManager;
     public image: HTMLImageElement;
     public url: string;
     public width: number;
@@ -8,8 +11,12 @@ export class Texture {
     public loaded: boolean = false;
     public ready: boolean = false;
 
-    constructor(gl: WebGLRenderingContext, url: string) {
+    constructor(gl: WebGLRenderingContext, url?: string, resourceManager?: ResourceManager) {
         this.gl = gl;
+
+        if (resourceManager) {
+            this.resourceManager = resourceManager;
+        }
 
         if (url) {
             this.url;
@@ -20,6 +27,7 @@ export class Texture {
     public load(url: string) {
         let _this = this;
         let gl = this.gl;
+        this.resourceManager.addImage();
         this.image = new Image();
         this.image.src = url;
         this.texture = gl.createTexture();
@@ -48,6 +56,10 @@ export class Texture {
     }
 
     private errorHandler(event: Event): void {
+        if (this.resourceManager) {
+            this.resourceManager.imageFailed();
+        }
+
         throw new Error('Failed to load sprite.');
     }
 
@@ -55,6 +67,10 @@ export class Texture {
         this.loaded = true;
         this.width = this.image.width;
         this.height = this.image.height;
+
+        if (this.resourceManager) {
+            this.resourceManager.imageReady();
+        }
 
         this.init();
     }
