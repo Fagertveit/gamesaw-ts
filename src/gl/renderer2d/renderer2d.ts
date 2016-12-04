@@ -26,10 +26,6 @@ const fragmentShader: string = 'precision mediump float;\n' +
 '	gl_FragColor = baseTexture;\n' +
 '}\n';
 
-interface RenderCalls {
-    [index: number]: RenderCall;
-}
-
 export class Renderer2d {
     public gl: WebGLRenderingContext;
     public program: Program;
@@ -44,7 +40,7 @@ export class Renderer2d {
     public height: number = 600;
     public flipY: number = 0;
 
-    public renderCalls: RenderCalls = {};
+    public renderCalls: RenderCall[] = [];
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = gl;
@@ -71,16 +67,27 @@ export class Renderer2d {
     }
 
     public addCall(renderCall: RenderCall) {
-        if (!this.renderCalls[renderCall.texture as number]) {
-            this.renderCalls[renderCall.texture as number] = new RenderCall();
-            this.renderCalls[renderCall.texture as number].texture = renderCall.texture;
+        let found = false;
+
+        for (let i in this.renderCalls) {
+            if (this.renderCalls[i].texture === renderCall.texture) {
+                this.renderCalls[i].add(renderCall);
+                found = true;
+                break;
+            }
         }
 
-        this.renderCalls[renderCall.texture as number].add(renderCall);
+        if (!found) {
+            this.renderCalls.push(new RenderCall());
+            let i = this.renderCalls.length - 1;
+            this.renderCalls[i].texture = renderCall.texture;
+            this.renderCalls[i].add(renderCall);
+        }
+
     }
 
     public clear(): void {
-        this.renderCalls = {};
+        this.renderCalls = [];
     }
 
     public execute(): void {

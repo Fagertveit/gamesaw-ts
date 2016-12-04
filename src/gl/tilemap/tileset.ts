@@ -12,6 +12,7 @@ export class Tileset {
     public imageWidth: number;
     public imageHeight: number;
     public firstgid: number;
+    public lastgid: number;
     public margin: number;
     public spacing: number;
     public columns: number;
@@ -33,6 +34,8 @@ export class Tileset {
         this.tileCount = tileCount;
         this.tileWidth = tileWidth;
         this.tileHeight = tileHeight;
+
+        this.lastgid = this.firstgid + this.tileCount - 1;
 
         if (resourceManager) {
             this.resourceManager = resourceManager;

@@ -96,7 +96,11 @@ export class Tilemap {
         this.orientation = map.orientation;
         this.renderOrder = map.renderorder;
         this.nextObjectId = map.nextobjectid;
-        this.backgroundColor.setHex(map.backgroundcolor);
+
+        if (map.backgroundcolor) {
+            this.backgroundColor.setHex(map.backgroundcolor);
+        }
+
 
         for (let layer of map.layers) {
             this.layers.push(new TilemapLayer(
@@ -148,7 +152,9 @@ export class Tilemap {
             }
         }
 
-        this.resourceManager.otherReady();
+        if (this.resourceManager) {
+            this.resourceManager.otherReady();
+        }
     }
 
     public render(renderer: Renderer2d, x: number, y: number) {
@@ -160,7 +166,12 @@ export class Tilemap {
                     let tileY: number = this.tileHeight * tileData.row + y;
 
                     if (tileData.tileid !== 0) {
-                        this.tilesets[0].renderTile(renderer, tileX, tileY, tileData.tileid);
+                        for (let j in this.tilesets) {
+                            if (tileData.tileid >= this.tilesets[j].firstgid && tileData.tileid <= this.tilesets[j].lastgid) {
+                                this.tilesets[j].renderTile(renderer, tileX, tileY, tileData.tileid);
+                                break;
+                            }
+                        }
                     }
                 }
             }
