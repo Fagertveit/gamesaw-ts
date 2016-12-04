@@ -4,6 +4,7 @@ import { NodeList } from './node-list';
 import { Heuristic } from './heuristic';
 import { Connection } from './connection';
 import { Graph } from './graph';
+import { TilemapLayer } from '../../gl/tilemap/tilemap-layer';
 
 export class PathFinder {
     public startRecord: NodeRecord;
@@ -18,7 +19,22 @@ export class PathFinder {
         this.closed = new NodeList();
     }
 
-    public findPath(startNode: Node, endNode: Node, map: Node[]): Node[] {
+    public generatePathData(map: TilemapLayer, closed: number[]) {
+        let nodes: Node[][] = [];
+
+        for (let i = 0; i < map.height; i += 1) {
+            nodes[i] = [];
+            for (let j = 0; j < map.width; j += 1) {
+                let blocked = closed.indexOf(map.tiles[(i * map.width) + j]) !== -1;
+                nodes[i][j] = new Node(j, i);
+                nodes[i][j].setBlocked(blocked);
+            }
+        }
+
+        this.graph = new Graph(nodes);
+    }
+
+    public findPath(startNode: Node, endNode: Node): Node[] {
         let path: Node[] = [];
         let current: NodeRecord;
         let connections: Connection[] = [];
@@ -27,7 +43,10 @@ export class PathFinder {
         let endNodeRecord: NodeRecord;
         let endNodeHeuristic: number;
 
-        this.graph = new Graph(map);
+        this.startRecord = new NodeRecord();
+        this.open = new NodeList();
+        this.closed = new NodeList();
+
         this.heuristic = new Heuristic(endNode);
 
         if (this.graph.getNode(endNode).blocked) {
@@ -62,7 +81,7 @@ export class PathFinder {
                     this.closed.remove(endNodeRecord.getNode());
                     endNodeHeuristic = endNodeRecord.getEstimatedCost() - endNodeRecord.getCurrentCost();
                 } else if (this.open.contains(end)) {
-                    endNodeRecord = this.open.find(endNode);
+                    endNodeRecord = this.open.find(end);
 
                     if (endNodeRecord.getCurrentCost() <= endNodeCost) {
                         continue;
@@ -73,7 +92,7 @@ export class PathFinder {
                     endNodeRecord = new NodeRecord();
                     endNodeRecord.setNode(end);
 
-                    endNodeHeuristic = this.heuristic.euclideanDistance(endNode);
+                    endNodeHeuristic = this.heuristic.euclideanDistance(end);
                 }
 
                 endNodeRecord.setCurrentCost(endNodeCost);

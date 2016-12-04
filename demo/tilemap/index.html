@@ -19,7 +19,7 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(800, 600, 1);
+    var app = new gamesaw.Application(800, 600, 30);
     var testScene = app.sceneManager.addScene('test');
     testScene.add3dSurface('test');
     var ctx = testScene.getContext('test');
@@ -29,13 +29,47 @@
     var tilemap = new gamesaw.GL.Tilemap.Tilemap(ctx);
     tilemap.loadTiledMap('../data/testmap_original.json');
 
+    var pathTexture = new gamesaw.GL.Texture(ctx, '../img/path-tiles.png');
+    var pathTile = new gamesaw.GL.Sprite(pathTexture, 16, 16);
+    pathTile.setUVByPixels(0, 0, 16, 16);
+
+    var closedTiles = [
+        3, 4, 8, 11
+    ];
+
+    var startNode = new gamesaw.AI.AStar.Node(2, 2);
+
+    var pathFinder = new gamesaw.AI.AStar.PathFinder();
+    var mouse = new gamesaw.Input.Mouse();
+
+    pathFinder.generatePathData(tilemap.layers[0], closedTiles);
+
+    var path;
+
     testScene.render = function(delta) {
         this.clear('test');
         tilemap.render(renderer, 10, 10);
+
+        if (path) {
+            for (var i = 0; i < path.length; i += 1) {
+                pathTile.render(renderer, (path[i].x * 16 + 10), (path[i].y * 16 + 10));
+            }
+        }
         renderer.execute();
     };
     testScene.update = function(delta) {
+        if (mouse.button[0]) {
+            // calc x & y
+            let x = Math.ceil(((mouse.x - 10) / 16)) - 1;
+            let y = Math.ceil(((mouse.y - 10) / 16)) - 1;
 
+            console.log('Clicked on tile ' + x + ' : ' + y);
+
+            var endNode = new gamesaw.AI.AStar.Node(x, y);
+
+            path = pathFinder.findPath(startNode, endNode);
+            mouse.button[0] = false;
+        }
     };
 
     app.init();

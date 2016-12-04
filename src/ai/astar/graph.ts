@@ -2,28 +2,30 @@ import { Node } from './node';
 import { Connection } from './connection';
 
 export class Graph {
-    public nodes: Node[] = [];
+    public nodes: Node[][];
 
-    constructor(nodes: Node[]) {
+    constructor(nodes: Node[][]) {
         if (nodes) {
             this.nodes = nodes;
         }
     }
 
-    public setNodes(nodes: Node[]): void {
+    public setNodes(nodes: Node[][]): void {
         this.nodes = nodes;
     }
 
     public isValidNode(x: number, y: number): boolean {
+        if ( x < 0 || y < 0 || y >= this.nodes.length || x >= this.nodes[0].length) {
+            return false;
+        } else if (this.nodes[y][x].getBlocked()) {
+            return false;
+        }
+
         return true;
     }
 
     public getNode(node: Node): Node {
-        for (let i = 0; i < this.nodes.length; i += 1) {
-            if (this.nodes[i].x === node.x && this.nodes[i].y === node.y) {
-                return this.nodes[i];
-            }
-        }
+        return this.nodes[node.y][node.x];
     }
 
     public getConnections(srcNode: Node): Connection[] {
@@ -39,7 +41,7 @@ export class Graph {
                     tempConnection = new Connection();
 
                     tempConnection.setSrcNode(srcNode);
-                    tempConnection.setDstNode(this.nodes[srcNode.x + i]);
+                    tempConnection.setDstNode(this.nodes[srcNode.y + j][srcNode.x + i]);
                     tempConnection.setCost(1);
 
                     connections.push(tempConnection);

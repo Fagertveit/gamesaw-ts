@@ -7,7 +7,10 @@ export class NodeRecord {
     public currentCost: number = 0;
     public estimatedCost: number = 0;
 
-    constructor() { }
+    constructor() {
+        this.currentCost = 0;
+        this.estimatedCost = 0;
+    }
 
     public setNode(node: Node): void {
         this.node = node;

@@ -44,9 +44,12 @@
 
                 sprite.render(renderer, x, y);
             }*/
-            sprite1.renderAngleScale(renderer, 300, 200, angle, scale);
+            // sprite1.renderAngleScale(renderer, 300, 200, angle, scale);
 
-            sprite2.renderScale(renderer, 400, 100, scale);
+            // sprite2.renderScale(renderer, 400, 100, scale);
+
+            sprite1.renderScale(renderer, 100 - sprite1.width / 2, 200, 1);
+            sprite1.renderScale(renderer, 100 + sprite1.width / 2, 300, 1, -1);
         }
         renderer.execute();
     };

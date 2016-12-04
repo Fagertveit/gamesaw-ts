@@ -100,6 +100,7 @@ export class Renderer2d {
         gl.useProgram(this.program.program);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.cullFace(gl.FRONT_AND_BACK);
         gl.uniform2f(this.resolution, this.width, this.height);
         gl.uniform1i(this.flip, this.flipY);
 

@@ -45,14 +45,23 @@ export class Sprite {
         renderer.addCall(renderCall);
     }
 
-    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number): void {
+    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number, scaleY?: number): void {
         let renderCall: RenderCall = new RenderCall();
 
+        if (scaleY) {
+            renderCall.vertices = [x, y,
+                x + (this.width * scaleY), y,
+                x, y + (this.height * scale),
+                x + (this.width * scaleY), y + (this.height * scale)];
+        } else {
+            renderCall.vertices = [x, y,
+                x + (this.width * scale), y,
+                x, y + (this.height * scale),
+                x + (this.width * scale), y + (this.height * scale)];
+        }
+
         renderCall.texture = this.texture.texture;
-        renderCall.vertices = [x, y,
-            x + (this.width * scale), y,
-            x, y + (this.height * scale),
-            x + (this.width * scale), y + (this.height * scale)];
+
         renderCall.uvs = [this.uv[0], this.uv[1], this.uv[2], this.uv[1], this.uv[0], this.uv[3], this.uv[2], this.uv[3]];
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
