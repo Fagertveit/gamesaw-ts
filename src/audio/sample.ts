@@ -7,15 +7,13 @@ export class Sample {
     public loaded: boolean = false;
     private resourceManager: ResourceManager;
 
-    constructor(url: string, resourceManager?: ResourceManager) {
+    constructor(url: string) {
         if (url) {
             this.url = url;
             this.load(url);
         }
 
-        if (resourceManager) {
-            this.resourceManager = resourceManager;
-        }
+        this.resourceManager = ResourceManager.getInstance();
     }
 
     public load(url: string): void {
@@ -23,9 +21,7 @@ export class Sample {
         this.sample = new Audio();
         this.sample.src = url;
 
-        if (this.resourceManager) {
-            this.resourceManager.addAudio();
-        }
+        this.resourceManager.addAudio();
 
         this.sample.addEventListener('load', (event) => {
             _this.loadHandler(event);
@@ -63,15 +59,11 @@ export class Sample {
         this.loaded = true;
         this.length = this.sample.duration;
 
-        if (this.resourceManager) {
-            this.resourceManager.audioReady();
-        }
+        this.resourceManager.audioReady();
     }
 
     public errorHandler(event: Event) {
-        if (this.resourceManager) {
-            this.resourceManager.audioFailed();
-        }
+        this.resourceManager.audioFailed();
 
         throw new Error('Failed to load audio resource.');
     }

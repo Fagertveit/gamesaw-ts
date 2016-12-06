@@ -11,12 +11,10 @@ export class Texture {
     public loaded: boolean = false;
     public ready: boolean = false;
 
-    constructor(gl: WebGLRenderingContext, url?: string, resourceManager?: ResourceManager) {
+    constructor(gl: WebGLRenderingContext, url?: string) {
         this.gl = gl;
 
-        if (resourceManager) {
-            this.resourceManager = resourceManager;
-        }
+        this.resourceManager = ResourceManager.getInstance();
 
         if (url) {
             this.url;
@@ -28,9 +26,7 @@ export class Texture {
         let _this = this;
         let gl = this.gl;
 
-        if (this.resourceManager) {
-            this.resourceManager.addImage();
-        }
+        this.resourceManager.addImage();
 
         this.image = new Image();
         this.image.src = url;
@@ -72,9 +68,7 @@ export class Texture {
         this.width = this.image.width;
         this.height = this.image.height;
 
-        if (this.resourceManager) {
-            this.resourceManager.imageReady();
-        }
+        this.resourceManager.imageReady();
 
         this.init();
     }

@@ -28,13 +28,11 @@ export class Font {
     public align: number = Align.LEFT;
     private http: Http;
 
-    constructor(gl: WebGLRenderingContext, configUrl?: string, resourceManager?: ResourceManager) {
+    constructor(gl: WebGLRenderingContext, configUrl?: string) {
         this.gl = gl;
         this.http = new Http(false);
 
-        if (resourceManager) {
-            this.resourceManager = resourceManager;
-        }
+        this.resourceManager = ResourceManager.getInstance();
 
         if (configUrl) {
             this.configUrl = configUrl;
@@ -46,9 +44,7 @@ export class Font {
     public load(configUrl: string): void {
         let _this = this;
 
-        if (this.resourceManager) {
-            this.resourceManager.addOther();
-        }
+        this.resourceManager.addOther();
 
         this.http.get(configUrl, (data: XMLHttpRequest) => {
             _this.parseConfig(data.responseXML);
@@ -120,9 +116,7 @@ export class Font {
             };
         }
 
-        if (this.resourceManager) {
-            this.resourceManager.otherReady();
-        }
+        this.resourceManager.otherReady();
     }
 
     public drawString(renderer: FontRenderer, str: string, x: number, y: number): void {

@@ -1,4 +1,6 @@
 export class ResourceManager {
+    private static _instance: ResourceManager = new ResourceManager();
+
     public imageAssets: number = 0;
     public audioAssets: number = 0;
     public otherAssets: number = 0;
@@ -11,7 +13,17 @@ export class ResourceManager {
     public failedAudio: number = 0;
     public failedOther: number = 0;
 
-    constructor() {}
+    constructor() {
+        if (ResourceManager._instance) {
+            throw new Error('Error: Instantiation failed, Use ResourceManager.getInstance() instead of new.');
+        }
+
+        ResourceManager._instance = this;
+    }
+
+    public static getInstance(): ResourceManager {
+        return ResourceManager._instance;
+    }
 
     public getPercent(): number {
         return Math.ceil(

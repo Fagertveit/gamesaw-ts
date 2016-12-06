@@ -63,14 +63,12 @@ export class Tilemap {
 
     private http: Http;
 
-    constructor(gl?: WebGLRenderingContext, resourceManager?: ResourceManager) {
+    constructor(gl?: WebGLRenderingContext) {
         if (gl) {
             this.gl = gl;
         }
 
-        if (resourceManager) {
-            this.resourceManager = resourceManager;
-        }
+        this.resourceManager = ResourceManager.getInstance();
 
         this.http = new Http(false);
     }
@@ -78,9 +76,7 @@ export class Tilemap {
     public loadTiledMap(url: string) {
         let _this = this;
 
-        if (this.resourceManager) {
-            this.resourceManager.addOther();
-        }
+        this.resourceManager.addOther();
 
         this.http.get(url, (data: AJAXResponse) => {
             _this.parseTiledMap(data.responseText);
@@ -118,43 +114,23 @@ export class Tilemap {
         }
 
         for (let tileset of map.tilesets) {
-            if (this.resourceManager) {
-                this.tilesets.push(new Tileset(
-                    this.gl,
-                    tileset.name,
-                    tileset.image,
-                    tileset.imagewidth,
-                    tileset.imageheight,
-                    tileset.firstgid,
-                    tileset.margin,
-                    tileset.spacing,
-                    tileset.columns,
-                    tileset.tilecount,
-                    tileset.tilewidth,
-                    tileset.tileheight,
-                    this.resourceManager
-                ));
-            } else {
-                this.tilesets.push(new Tileset(
-                    this.gl,
-                    tileset.name,
-                    tileset.image,
-                    tileset.imagewidth,
-                    tileset.imageheight,
-                    tileset.firstgid,
-                    tileset.margin,
-                    tileset.spacing,
-                    tileset.columns,
-                    tileset.tilecount,
-                    tileset.tilewidth,
-                    tileset.tileheight
-                ));
-            }
+            this.tilesets.push(new Tileset(
+                this.gl,
+                tileset.name,
+                tileset.image,
+                tileset.imagewidth,
+                tileset.imageheight,
+                tileset.firstgid,
+                tileset.margin,
+                tileset.spacing,
+                tileset.columns,
+                tileset.tilecount,
+                tileset.tilewidth,
+                tileset.tileheight
+            ));
         }
 
-        if (this.resourceManager) {
-            this.resourceManager.otherReady();
-        }
+        this.resourceManager.otherReady();
     }
 
     public render(renderer: Renderer2d, x: number, y: number, scale?: number, scaleY?: number) {
