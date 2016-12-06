@@ -157,7 +157,7 @@ export class Tilemap {
         }
     }
 
-    public render(renderer: Renderer2d, x: number, y: number) {
+    public render(renderer: Renderer2d, x: number, y: number, scale?: number, scaleY?: number) {
         for (let layer of this.layers) {
             if (layer.isVisible()) {
                 for (let i in layer.tiles) {
@@ -169,6 +169,27 @@ export class Tilemap {
                         for (let j in this.tilesets) {
                             if (tileData.tileid >= this.tilesets[j].firstgid && tileData.tileid <= this.tilesets[j].lastgid) {
                                 this.tilesets[j].renderTile(renderer, tileX, tileY, tileData.tileid);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number) {
+        for (let layer of this.layers) {
+            if (layer.isVisible()) {
+                for (let i in layer.tiles) {
+                    let tileData = layer.getTile(+i);
+                    let tileX: number = (this.tileWidth * scale) * tileData.col + x;
+                    let tileY: number = (this.tileHeight * scale) * tileData.row + y;
+
+                    if (tileData.tileid !== 0) {
+                        for (let j in this.tilesets) {
+                            if (tileData.tileid >= this.tilesets[j].firstgid && tileData.tileid <= this.tilesets[j].lastgid) {
+                                this.tilesets[j].renderTileScale(renderer, tileX, tileY, tileData.tileid, scale);
                                 break;
                             }
                         }

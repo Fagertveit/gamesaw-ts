@@ -97,15 +97,22 @@ export class Sprite {
         renderer.addCall(renderCall);
     }
 
-    public renderAngleScale(renderer: Renderer2d, x: number, y: number, angle: number, scale: number): void {
+    public renderAngleScale(renderer: Renderer2d, x: number, y: number, angle: number, scale: number, scaleY?: number): void {
         let vec: Vector2[] = [];
         let px: number = x + ((this.width * scale) / 2);
         let py: number = y + ((this.height * scale) / 2);
 
-        vec[0] = new Vector2(x, y);
-        vec[1] = new Vector2(x + (this.width * scale), y);
-        vec[2] = new Vector2(x, y + (this.height * scale));
-        vec[3] = new Vector2(x + (this.width * scale), y + (this.height * scale));
+        if (scaleY) {
+            vec[0] = new Vector2(x, y);
+            vec[1] = new Vector2(x + (this.width * scale), y);
+            vec[2] = new Vector2(x, y + (this.height * scaleY));
+            vec[3] = new Vector2(x + (this.width * scale), y + (this.height * scaleY));
+        } else {
+            vec[0] = new Vector2(x, y);
+            vec[1] = new Vector2(x + (this.width * scale), y);
+            vec[2] = new Vector2(x, y + (this.height * scale));
+            vec[3] = new Vector2(x + (this.width * scale), y + (this.height * scale));
+        }
 
         for (let vector in vec) {
             vec[vector] = vec[vector].rotatePivot(px, py, degreeToRadian(angle));

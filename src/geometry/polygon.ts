@@ -10,6 +10,22 @@ export class Polygon implements GeometricObject {
     ];
 
     constructor(points: Point[]) {
+        this.points = points;
+    }
 
+    public addPoint(point: Point): void {
+        this.points.push(point);
+    }
+
+    public removePoint(index: number): void {
+        this.points.splice(index, 1);
+    }
+
+    public removeFirst(): void {
+        this.points.shift();
+    }
+
+    public removeLast(): void {
+        this.points.pop();
     }
 }

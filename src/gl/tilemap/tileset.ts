@@ -69,4 +69,33 @@ export class Tileset {
 
         renderer.addCall(renderCall);
     }
+
+    public renderTileScale(renderer: Renderer2d, x: number, y: number, id: number, scale: number, scaleY?: number) {
+        let row: number = Math.floor((id - this.firstgid) / this.columns);
+        let col: number = (id - this.firstgid) % this.columns;
+
+        let uvs: number[] = [
+            ((col * this.tileWidth) / this.imageWidth),
+            ((row * this.tileHeight) / this.imageHeight),
+            (((col * this.tileWidth) + this.tileWidth) / this.imageWidth),
+            (((row * this.tileHeight) + this.tileHeight) / this.imageHeight)
+        ];
+
+        let renderCall: RenderCall = new RenderCall();
+
+        renderCall.texture = this.texture.texture;
+        renderCall.vertices = [x, y,
+            x + this.tileWidth * scale, y,
+            x, y + this.tileHeight * scale,
+            x + this.tileWidth * scale, y + this.tileHeight * scale];
+        renderCall.uvs = [uvs[0], uvs[1], uvs[2], uvs[1], uvs[0], uvs[3], uvs[2], uvs[3]];
+        renderCall.indices = [0, 1, 2, 1, 2, 3];
+        renderCall.numIndices = 6;
+
+        renderer.addCall(renderCall);
+    }
+
+    public renderTileAngle(renderer: Renderer2d, x: number, y: number, id: number, angle: number, scale?: number, scaleY?: number) {
+
+    }
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameSaw Game Library</title>
+    <script src="../../dist/gamesaw.js"></script>
+    <style>
+        .container {
+            width: 800px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GameSaw Game Library</h1>
+        <div id="gamesaw-container">
+
+        </div>
+    </div>
+
+<script>
+    var app = new gamesaw.Application(800, 600, 30);
+    var testScene = app.sceneManager.addScene('test');
+    testScene.add3dSurface('test');
+    var ctx = testScene.getContext('test');
+    ctx.clearColor(0, 0, 0, 1);
+    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
+    var texture = new gamesaw.GL.Texture(ctx, '../img/blob.png');
+    texture.width = 64;
+    texture.height = 64;
+    var scale = 1.0;
+    var angle = 0;
+    var scaleUp = true;
+
+    var blobSprites = [
+        new gamesaw.GL.Sprite(texture, 16, 16),
+        new gamesaw.GL.Sprite(texture, 16, 16),
+        new gamesaw.GL.Sprite(texture, 16, 16)
+    ];
+
+    blobSprites[0].setUVByPixels(0, 0, 16, 16);
+    blobSprites[1].setUVByPixels(16, 0, 16, 16);
+    blobSprites[2].setUVByPixels(32, 0, 16, 16);
+
+    var blobIdle = new gamesaw.GL.AnimatedSprite(blobSprites, true, 250);
+
+    testScene.render = function(delta) {
+        this.clear('test');
+        if (texture.ready) {
+            /*for (var i = 0; i < 1000; i++) {
+                var x = Math.random() * 640;
+                var y = Math.random() * 480;
+
+                sprite.render(renderer, x, y);
+            }*/
+            // sprite1.renderAngleScale(renderer, 300, 200, angle, scale);
+
+            // sprite2.renderScale(renderer, 400, 100, scale);
+
+            blobIdle.renderScale(renderer, 350, 250, 8);
+        }
+        renderer.execute();
+    };
+    testScene.update = function(delta) {
+        angle += 5;
+        if (scale > 5 && scaleUp) {
+            scaleUp = false;
+        }
+
+        if (scale < 0.2 && !scaleUp) {
+            scaleUp = true;
+        }
+
+        if (scaleUp) {
+            scale += 0.2;
+        } else {
+            scale -= 0.2;
+        }
+
+        blobIdle.update(delta);
+    };
+
+    app.init();
+</script>
+</body>
+</html>

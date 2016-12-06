@@ -48,7 +48,7 @@
 
     testScene.render = function(delta) {
         this.clear('test');
-        tilemap.render(renderer, 10, 10);
+        tilemap.renderScale(renderer, 0, 0, 3);
 
         if (path) {
             for (var i = 0; i < path.length; i += 1) {
