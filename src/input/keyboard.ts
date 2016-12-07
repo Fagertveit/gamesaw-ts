@@ -22,12 +22,19 @@ export enum Key {
 };
 
 export class Keyboard {
+    private static _instance: Keyboard = new Keyboard();
     public keys: boolean[] = [];
     public preventDefault: boolean = false;
     public stopPropagation: boolean = false;
     public keyLogger: boolean = false;
 
     constructor() {
+        if (Keyboard._instance) {
+            throw new Error('Error: Instantiation failed, Use ResourceManager.getInstance() instead of new.');
+        }
+
+        Keyboard._instance = this;
+
         let _this = this;
         for (let i = 0; i < 256; i++) {
             this.keys[i] = false;
@@ -40,6 +47,10 @@ export class Keyboard {
         window.addEventListener('keyup', (event) => {
             _this.handleKeyup(event);
         });
+    }
+
+    public static getInstance(): Keyboard {
+        return Keyboard._instance;
     }
 
     public clearKeys(): void {

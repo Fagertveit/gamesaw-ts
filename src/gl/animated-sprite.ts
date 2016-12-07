@@ -1,6 +1,10 @@
 import { Sprite } from './sprite';
 import { Renderer2d } from './renderer2d/renderer2d';
 
+export interface Animations {
+    [index: string]: AnimatedSprite;
+}
+
 export class AnimatedSprite {
     public frames: Sprite[] = [];
     public loop: boolean = false;

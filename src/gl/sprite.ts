@@ -21,7 +21,7 @@ export class Sprite {
         }
 
         if (uv) {
-            this.uv = uv;
+            this.setUVByPixels(uv[0], uv[1], uv[2], uv[3]);
         }
     }
 

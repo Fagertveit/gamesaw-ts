@@ -20,4 +20,8 @@ export class AABB implements GeometricObject {
             this.halfHeight = halfHeight;
         }
     }
+
+    public setPosition(x: number, y: number) {
+        this.pos.set(x, y);
+    }
 }
