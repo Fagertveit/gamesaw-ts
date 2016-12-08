@@ -1,6 +1,7 @@
 import { CONTAINER_ID } from '../gamesaw';
 
 export class Mouse {
+    private static instance: Mouse = new Mouse();
     public x: number;
     public y: number;
     public button: boolean[];
@@ -10,11 +11,19 @@ export class Mouse {
     private container: HTMLElement;
 
     constructor() {
-        let _this = this;
-        this.container = document.getElementById(CONTAINER_ID);
+        if (Mouse.instance) {
+            throw new Error('Error: Instantiation failed, Use Mouse.getInstance() instead of new.');
+        }
+
+        Mouse.instance = this;
 
         this.button = [false, false, false];
         this.click = [false, false, false];
+    }
+
+    public init(): void {
+        let _this = this;
+        this.container = document.getElementById(CONTAINER_ID);
 
         this.container.addEventListener('click', (event) => {
             _this.handleClick(event);
@@ -31,6 +40,10 @@ export class Mouse {
         this.container.addEventListener('mouseup', (event) => {
             _this.handleMouseUp(event);
         });
+    }
+
+    public static getInstance(): Mouse {
+        return Mouse.instance;
     }
 
     public clearClicks(): void {

@@ -4,6 +4,7 @@ import { Color } from '../../graphics/color';
 import { Http, AJAXResponse } from '../../utility/http';
 import { ResourceManager } from '../../utility/resource-manager';
 import { Renderer2d } from '../renderer2d/renderer2d';
+import { Rectangle } from '../../geometry/rectangle';
 
 export interface Tiled {
     width: number;
@@ -46,6 +47,13 @@ export interface TiledLayer {
     type: string;
 }
 
+export interface TileInfo {
+    collider?: Rectangle;
+    id: number;
+    row?: number;
+    col?: number;
+}
+
 export class Tilemap {
     public gl: WebGLRenderingContext;
     private resourceManager: ResourceManager;
@@ -60,6 +68,7 @@ export class Tilemap {
     public orientation: string;
     public renderOrder: string;
     public nextObjectId: number;
+    public activeLayer: number = 0;
 
     private http: Http;
 
@@ -131,6 +140,52 @@ export class Tilemap {
         }
 
         this.resourceManager.otherReady();
+    }
+
+    public setActiveLayer(activeLayer: number): void {
+        this.activeLayer = activeLayer;
+    }
+
+    public getActiveLayer(): number {
+        return this.activeLayer;
+    }
+
+    public getContainedTiles(container: Rectangle, scale?: number): TileInfo[] {
+        let tiles: TileInfo[] = [];
+
+        return tiles;
+    }
+
+    public getTileAt(x: number, y: number, scale?: number): TileInfo {
+        let tile: TileInfo = {
+            id: 0
+        };
+
+        if (scale) {
+            let row: number = Math.floor(y / (this.tileHeight * scale));
+            let col: number = Math.floor(x / (this.tileWidth * scale));
+            let pos: number = (row * this.width) + col;
+            let tileData = this.layers[this.activeLayer].getTile(pos);
+
+            tile.id = tileData.tileid;
+            tile.row = tileData.row;
+            tile.col = tileData.col;
+            tile.collider = new Rectangle((this.tileWidth * scale) * col, (this.tileHeight * scale) * row, (this.tileWidth * scale), (this.tileHeight * scale));
+        } else {
+            let row: number = Math.floor(y / this.tileHeight);
+            let col: number = Math.floor(x / this.tileWidth);
+            let pos: number = (row * this.width) + col;
+            let tileData = this.layers[this.activeLayer].getTile(pos);
+
+            console.log(col, row, pos);
+
+            tile.id = tileData.tileid;
+            tile.row = tileData.row;
+            tile.col = tileData.col;
+            tile.collider = new Rectangle(this.tileWidth * col, this.tileHeight * row, this.tileWidth, this.tileHeight);
+        }
+
+        return tile;
     }
 
     public render(renderer: Renderer2d, x: number, y: number, scale?: number, scaleY?: number) {

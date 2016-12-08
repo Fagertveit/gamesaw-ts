@@ -34,6 +34,8 @@ export class Collider {
                 return this.pointCircle(obj0 as Point, obj1 as Circle);
                 case GeometricEnum.RECTANGLE:
                 return this.pointRectangle(obj0 as Point, obj1 as Rectangle);
+                case GeometricEnum.AABB:
+                return this.pointAABB(obj0 as Point, obj1 as AABB);
                 case GeometricEnum.POLYGON:
                 return this.pointPolygon();
                 default:
@@ -62,6 +64,8 @@ export class Collider {
                 return this.circlePoint(obj0 as Circle, obj1 as Point);
                 case GeometricEnum.RECTANGLE:
                 return this.circleRectangle();
+                case GeometricEnum.AABB:
+                return this.circleAABB(obj0 as Circle, obj1 as AABB);
                 case GeometricEnum.POLYGON:
                 return this.circlePolygon(obj0 as Circle, obj1 as Polygon);
                 default:
@@ -71,6 +75,8 @@ export class Collider {
             switch (obj1.type) {
                 case GeometricEnum.RECTANGLE:
                 return this.rectangleRectangle(obj0 as Rectangle, obj1 as Rectangle);
+                case GeometricEnum.AABB:
+                return this.rectangleAABB(obj0 as Rectangle, obj1 as AABB);
                 case GeometricEnum.LINE:
                 return this.rectangleLine();
                 case GeometricEnum.CIRCLE:
@@ -96,6 +102,17 @@ export class Collider {
                 return this.polygonPoint();
                 default:
                 throw new Error('Second object not a collidable body');
+            }
+            case GeometricEnum.AABB:
+            switch (obj1.type) {
+                case GeometricEnum.AABB:
+                return this.aabbAABB(obj0 as AABB, obj1 as AABB);
+                case GeometricEnum.POINT:
+                return this.aabbPoint(obj0 as AABB, obj1 as Point);
+                case GeometricEnum.CIRCLE:
+                return this.aabbCircle(obj0 as AABB, obj1 as Circle);
+                case GeometricEnum.RECTANGLE:
+                return this.aabbRectangle(obj0 as AABB, obj1 as Rectangle);
             }
             default:
                 throw new Error('Couldn\'t find any collider for type');
@@ -199,5 +216,57 @@ export class Collider {
 
     public polygonPolygon(): boolean {
         return true;
+    }
+
+    public pointAABB(obj0: Point, obj1: AABB): boolean {
+        if (Math.abs(obj1.pos.x - obj0.x) > obj1.halfWidth) {
+            return false;
+        } else if (Math.abs(obj1.pos.y - obj0.y) > obj1.halfHeight) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public aabbPoint(obj0: AABB, obj1: Point): boolean {
+        return this.pointAABB(obj1, obj0);
+    }
+
+    public circleAABB(obj0: Circle, obj1: AABB): boolean {
+        if (Math.abs(obj1.pos.x - obj0.pos.x) > (obj1.halfWidth + obj0.radius)) {
+            return false;
+        } else if (Math.abs(obj1.pos.y - obj0.pos.y) > (obj1.halfHeight + obj0.radius)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public aabbCircle(obj0: AABB, obj1: Circle): boolean {
+        return this.circleAABB(obj1, obj0);
+    }
+
+    public rectangleAABB(obj0: Rectangle, obj1: AABB): boolean {
+        let halfWidth: number = obj0.width / 2;
+        let halfHeight: number = obj0.height / 2;
+
+        if (Math.abs(obj0.pos.x + halfWidth - obj1.pos.x) > (halfWidth + obj1.halfWidth)) {
+            return false;
+        } else if (Math.abs(obj0.pos.y + halfHeight - obj1.pos.y) > (halfHeight + obj1.halfHeight)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public aabbRectangle(obj0: AABB, obj1: Rectangle): boolean {
+        return this.rectangleAABB(obj1, obj0);
+    }
+
+    public aabbAABB(obj0: AABB, obj1: AABB): boolean {
+        if (Math.abs(obj0.pos.x - obj1.pos.x) > (obj0.halfWidth + obj1.halfWidth)) {
+            return false;
+        } else if (Math.abs(obj0.pos.y - obj1.pos.y) > (obj0.halfHeight + obj1.halfHeight)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
