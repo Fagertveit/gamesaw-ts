@@ -1,18 +1,16 @@
 import { Surface } from './surface.abstract';
 import { Color } from './color';
+import { Gamesaw } from '../gamesaw';
 
 export class Surface2d extends Surface {
-    public width: number = 640;
-    public height: number = 480;
+    public config: Gamesaw;
     public id: string = 'canvas-2d';
     public canvas: HTMLCanvasElement;
     public clearColor: Color = new Color(0, 0, 0, 1);
 
-    constructor(width: number, height: number, id: string) {
+    constructor(id: string) {
         super();
-
-        this.width = width;
-        this.height = height;
+        this.config = Gamesaw.getInstance();
         this.id = id;
 
         this.createCanvas();
@@ -25,12 +23,12 @@ export class Surface2d extends Surface {
 
         let ctx = this.getContext();
 
-        ctx.clearRect(0, 0, this.width, this.height);
+        ctx.clearRect(0, 0, this.config.getResolutionWidth(), this.config.getResolutionHeight());
 
         if (color) {
             ctx.save();
             ctx.fillStyle = color.getHex();
-            ctx.fillRect(0, 0, this.width, this.height);
+            ctx.fillRect(0, 0, this.config.getResolutionWidth(), this.config.getResolutionHeight());
             ctx.restore();
         }
     }

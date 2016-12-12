@@ -1,5 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { RenderCall } from './render-call';
+import { FrameBuffer } from './framebuffer';
+import { Gamesaw } from '../../gamesaw';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -28,6 +30,8 @@ const fragmentShader: string = 'precision mediump float;\n' +
 
 export class Renderer2d {
     public gl: WebGLRenderingContext;
+    public config: Gamesaw;
+    public scaleFBO: FrameBuffer;
     public program: Program;
     public resolution: WebGLUniformLocation;
     public flip: WebGLUniformLocation;
@@ -44,6 +48,11 @@ export class Renderer2d {
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = gl;
+        this.config = Gamesaw.getInstance();
+
+        if (this.config.doScale()) {
+            this.scaleFBO = new FrameBuffer(this.gl, this.config.getRenderResolutionWidth(), this.config.getRenderResolutionHeight());
+        }
 
         this.program = new Program(this.gl);
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
@@ -91,8 +100,18 @@ export class Renderer2d {
     }
 
     public execute(): void {
-        this.flush();
-        this.clear();
+        if (this.config.doScale()) {
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scaleFBO.fbo);
+            this.flipY = 1;
+            this.flush();
+            this.clear();
+            this.flipY = 0;
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+            this.renderScale();
+        } else {
+            this.flush();
+            this.clear();
+        }
     }
 
     public flush(): void {
@@ -101,7 +120,7 @@ export class Renderer2d {
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.cullFace(gl.FRONT_AND_BACK);
-        gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
         gl.uniform1i(this.flip, this.flipY);
 
         for (let call in this.renderCalls) {
@@ -121,5 +140,42 @@ export class Renderer2d {
 
             gl.drawElements(gl.TRIANGLES, this.renderCalls[call].numIndices, gl.UNSIGNED_SHORT, 0);
         }
+    }
+
+    public renderScale(): void {
+        let gl = this.gl;
+        let width: number = this.config.getRenderResolutionWidth();
+        let height: number = this.config.getRenderResolutionHeight();
+
+        let vertices = [0, 0, width, 0, 0, height, width, height];
+        let uvs = [
+            0, 0,
+            1, 0,
+            0, 1,
+            1, 1
+        ];
+        let indices = [0, 1, 2, 1, 2, 3];
+        let numIndices = 6;
+
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.cullFace(gl.FRONT_AND_BACK);
+        gl.uniform2f(this.resolution, this.config.getRenderResolutionWidth(), this.config.getRenderResolutionHeight());
+        gl.uniform1i(this.flip, this.flipY);
+
+        gl.bindTexture(gl.TEXTURE_2D, this.scaleFBO.texture);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.position);
+        gl.vertexAttribPointer(this.position, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.textureCoordinates);
+        gl.vertexAttribPointer(this.textureCoordinates, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+        gl.drawElements(gl.TRIANGLES, numIndices, gl.UNSIGNED_SHORT, 0);
     }
 }

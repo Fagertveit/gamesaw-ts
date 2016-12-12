@@ -1,7 +1,9 @@
 import { SceneManager } from './scene-manager';
+import { Gamesaw } from './gamesaw';
 
 export class Application {
     public sceneManager: SceneManager;
+    public config: Gamesaw;
     public active: boolean = true;
     public applicationTimer: number;
     public targetFps: number = 30;
@@ -10,12 +12,14 @@ export class Application {
     public lastUpdate: number;
     public fps: number;
     public frames: number;
-    public width: number;
-    public height: number;
 
-    constructor(width: number, height: number, targetFps?: number) {
-        this.width = width;
-        this.height = height;
+    constructor(width: number, height: number, targetFps?: number, renderWidth?: number, renderHeight?: number) {
+        this.config = Gamesaw.getInstance();
+        this.config.setResolution(width, height);
+
+        if (renderWidth && renderHeight) {
+            this.config.setRenderResolution(renderWidth, renderHeight);
+        }
 
         if (targetFps) {
             this.targetFps = targetFps;

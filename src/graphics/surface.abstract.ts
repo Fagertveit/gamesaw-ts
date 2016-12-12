@@ -1,21 +1,26 @@
 import { Color } from './color';
-import { CONTAINER_ID } from '../gamesaw';
+import { Gamesaw } from '../gamesaw';
 
 export abstract class Surface {
-    public abstract width: number;
-    public abstract height: number;
+    public abstract config: Gamesaw;
     public abstract id: string;
     public abstract canvas: HTMLCanvasElement;
 
     public constructor() { }
 
     public createCanvas(): void {
-        let container = document.getElementById(CONTAINER_ID);
+        let container = document.getElementById(this.config.getContainerId());
 
         this.canvas = document.createElement('canvas');
         this.canvas.setAttribute('id', this.id);
-        this.canvas.setAttribute('width', String(this.width));
-        this.canvas.setAttribute('height', String(this.height));
+
+        if (this.config.doScale()) {
+            this.canvas.setAttribute('width', String(this.config.getRenderResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getRenderResolutionHeight()));
+        } else {
+            this.canvas.setAttribute('width', String(this.config.getResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getResolutionHeight()));
+        }
 
         this.canvas.style.position = 'absolute';
 

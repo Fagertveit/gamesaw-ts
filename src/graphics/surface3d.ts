@@ -1,19 +1,18 @@
 import { Surface } from './surface.abstract';
 import { Color } from './color';
+import { Gamesaw } from '../gamesaw';
 
 export class Surface3d extends Surface {
     public gl: WebGLRenderingContext;
-    public width: number;
-    public height: number;
+    public config: Gamesaw;
     public id: string;
     public clearColor: Color = new Color(0, 0, 0, 1);
     public canvas: HTMLCanvasElement;
 
-    constructor(width: number, height: number, id: string) {
+    constructor(id: string) {
         super();
+        this.config = Gamesaw.getInstance();
 
-        this.width = width;
-        this.height = height;
         this.id = id;
 
         this.createCanvas();

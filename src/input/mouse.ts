@@ -1,7 +1,8 @@
-import { CONTAINER_ID } from '../gamesaw';
+import { Gamesaw } from '../gamesaw';
 
 export class Mouse {
     private static instance: Mouse = new Mouse();
+    public config: Gamesaw;
     public x: number;
     public y: number;
     public button: boolean[];
@@ -23,7 +24,8 @@ export class Mouse {
 
     public init(): void {
         let _this = this;
-        this.container = document.getElementById(CONTAINER_ID);
+        this.config = Gamesaw.getInstance();
+        this.container = document.getElementById(this.config.getContainerId());
 
         this.container.addEventListener('click', (event) => {
             _this.handleClick(event);
