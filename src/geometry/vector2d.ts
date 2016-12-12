@@ -103,6 +103,10 @@ export class Vector2 implements GeometricObject, Vec2 {
         return Math.atan2(this.x, -this.y);
     }
 
+    public copy(): Vector2 {
+        return new Vector2(this.x, this.y);
+    }
+
     public rotate(radian: number): Vector2 {
         if (this.x === 0) {
             this.x += EPSILON;

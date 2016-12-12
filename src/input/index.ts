@@ -1,5 +1,6 @@
 import { Mouse } from './mouse';
 import { Keyboard, Key } from './keyboard';
 import { Touch } from './touch';
+import { Controller } from './controller';
 
-export { Mouse, Keyboard, Key, Touch };
+export { Mouse, Controller, Keyboard, Key, Touch };

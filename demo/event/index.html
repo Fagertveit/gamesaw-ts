@@ -28,8 +28,10 @@
     var fontRenderer = new gamesaw.GL.Font.FontRenderer(ctx);
     var font = new gamesaw.GL.Font.Font(ctx, '../data/default.xml');
 
-    var mouse = new gamesaw.Input.Mouse();
-    var keyboard = new gamesaw.Input.Keyboard();
+    var mouse = gamesaw.Input.Mouse.getInstance();
+    mouse.init();
+    var keyboard = gamesaw.Input.Keyboard.getInstance();
+    var controller = gamesaw.Input.Controller.getInstance();
 
     var keyEnum = gamesaw.Input.Key;
 
@@ -39,11 +41,31 @@
         font.drawString(fontRenderer, "Mouse left button: " + mouse.button[0], 10, 50);
         font.drawString(fontRenderer, "Mouse middle button: " + mouse.button[1], 10, 90);
         font.drawString(fontRenderer, "Mouse right button: " + mouse.button[2], 10, 130);
-        
+
         font.drawString(fontRenderer, "W: " + keyboard.keys[keyEnum['W']], 10, 200);
         font.drawString(fontRenderer, "A: " + keyboard.keys[keyEnum['A']], 10, 240);
         font.drawString(fontRenderer, "S: " + keyboard.keys[keyEnum['S']], 10, 280);
         font.drawString(fontRenderer, "D: " + keyboard.keys[keyEnum['D']], 10, 320);
+
+        controller.update();
+        var y = 40;
+        var i = 0;
+        for (var index = 0; index < controller.buttons.length; index++) {
+            var button = controller.buttons[index];
+            font.drawString(fontRenderer, "Button " + i + ": " + button.value + " Pressed: " + button.pressed, 400, y);
+            i++;
+            y += 25;
+        }
+
+        y = 400;
+        i = 0;
+        for (var index = 0; index < controller.axes.length; index++) {
+            var axe = controller.axes[index];
+            font.drawString(fontRenderer, "Axis " + i + ": " + axe, 10, y);
+            i++;
+            y += 25;
+        }
+
         fontRenderer.execute();
     };
     testScene.update = function(delta) {
