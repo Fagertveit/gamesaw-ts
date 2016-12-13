@@ -99,5 +99,10 @@ export class Mouse {
 
         this.x -= this.container.offsetLeft;
         this.y -= this.container.offsetTop;
+
+        if (this.config.doScale()) {
+            this.x = Math.floor(this.x * this.config.getWidthRatio());
+            this.y = Math.floor(this.y * this.config.getHeightRatio());
+        }
     }
 }

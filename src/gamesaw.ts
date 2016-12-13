@@ -5,6 +5,9 @@ export class Gamesaw {
     public height: number = 480;
     public renderWidth: number;
     public renderHeight: number;
+    public widthRatio: number;
+    public heightRatio: number;
+    public fboTextureSize: number = 1024;
 
     constructor() {
         if (Gamesaw.instance) {
@@ -29,6 +32,20 @@ export class Gamesaw {
     public setRenderResolution(width: number, height: number): void {
         this.renderWidth = width;
         this.renderHeight = height;
+
+        this.widthRatio = this.width / this.renderWidth;
+        this.heightRatio = this.height / this.renderHeight;
+
+        // We need to calculate the rendersize of the fbo, it needs to be power of 2
+        let measurableSize: number = Math.max(this.renderWidth, this.renderHeight);
+
+        if (measurableSize < 512) {
+            this.fboTextureSize = 512;
+        } else if (measurableSize < 1024) {
+            this.fboTextureSize = 1024;
+        } else if (measurableSize < 2048) {
+            this.fboTextureSize = 2048;
+        }
     }
 
     public getRenderResolution(): number[] {
@@ -41,6 +58,18 @@ export class Gamesaw {
 
     public getRenderResolutionHeight(): number {
         return this.renderHeight;
+    }
+
+    public getFboTextureSize(): number {
+        return this.fboTextureSize;
+    }
+
+    public getWidthRatio(): number {
+        return this.widthRatio;
+    }
+
+    public getHeightRatio(): number {
+        return this.heightRatio;
     }
 
     public doScale(): boolean {

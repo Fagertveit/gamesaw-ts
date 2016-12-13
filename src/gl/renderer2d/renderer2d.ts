@@ -51,7 +51,7 @@ export class Renderer2d {
         this.config = Gamesaw.getInstance();
 
         if (this.config.doScale()) {
-            this.scaleFBO = new FrameBuffer(this.gl, this.config.getRenderResolutionWidth(), this.config.getRenderResolutionHeight());
+            this.scaleFBO = new FrameBuffer(this.gl, this.config.getFboTextureSize(), this.config.getFboTextureSize());
         }
 
         this.program = new Program(this.gl);
@@ -92,7 +92,6 @@ export class Renderer2d {
             this.renderCalls[i].texture = renderCall.texture;
             this.renderCalls[i].add(renderCall);
         }
-
     }
 
     public clear(): void {
@@ -121,6 +120,7 @@ export class Renderer2d {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.cullFace(gl.FRONT_AND_BACK);
         gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
+
         gl.uniform1i(this.flip, this.flipY);
 
         for (let call in this.renderCalls) {
@@ -144,22 +144,25 @@ export class Renderer2d {
 
     public renderScale(): void {
         let gl = this.gl;
-        let width: number = this.config.getRenderResolutionWidth();
-        let height: number = this.config.getRenderResolutionHeight();
+        let width: number = this.config.getResolutionWidth();
+        let height: number = this.config.getResolutionHeight();
+
+        let uvWidth = this.config.getRenderResolutionWidth() / this.config.getFboTextureSize();
+        let uvHeight = this.config.getRenderResolutionHeight() / this.config.getFboTextureSize();
 
         let vertices = [0, 0, width, 0, 0, height, width, height];
         let uvs = [
             0, 0,
-            1, 0,
-            0, 1,
-            1, 1
+            uvWidth, 0,
+            0, uvHeight,
+            uvWidth, uvHeight
         ];
         let indices = [0, 1, 2, 1, 2, 3];
         let numIndices = 6;
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.cullFace(gl.FRONT_AND_BACK);
-        gl.uniform2f(this.resolution, this.config.getRenderResolutionWidth(), this.config.getRenderResolutionHeight());
+        gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
         gl.uniform1i(this.flip, this.flipY);
 
         gl.bindTexture(gl.TEXTURE_2D, this.scaleFBO.texture);
