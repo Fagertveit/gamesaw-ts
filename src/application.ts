@@ -18,16 +18,15 @@ export class Application {
 
     constructor(width: number, height: number, targetFps?: number, renderWidth?: number, renderHeight?: number) {
         this.config = Gamesaw.getInstance();
-
-        if (this.config.renderMode === 'webgl') {
-            this.surface = Surface3d.getInstance();
-            this.surface.init();
-        }
-
         this.config.setResolution(width, height);
 
         if (renderWidth && renderHeight) {
             this.config.setRenderResolution(renderWidth, renderHeight);
+        }
+
+        if (this.config.renderMode === 'webgl') {
+            this.surface = Surface3d.getInstance();
+            this.surface.init();
         }
 
         if (targetFps) {

@@ -2,6 +2,7 @@ import { Program, ShaderType } from '../shader/program';
 import { ParticleEmitter } from './particle-emitter';
 import { ParticleSystem } from './particle-system';
 import { Surface3d } from '../../graphics/surface3d';
+import { Gamesaw } from '../../gamesaw';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute float a_pointSize;\n' +
@@ -26,6 +27,7 @@ const fragmentShader: string = 'precision mediump float;\n' +
 
 export class ParticleRenderer {
     public gl: WebGLRenderingContext;
+    public config: Gamesaw;
     public program: Program;
     public resolution: WebGLUniformLocation;
     public colorLocation: WebGLUniformLocation;
@@ -33,11 +35,10 @@ export class ParticleRenderer {
     public position: number;
     public vertexBuffer: WebGLBuffer;
     public sizeBuffer: WebGLBuffer;
-    public width: number = 800;
-    public height: number = 600;
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = Surface3d.getInstance().getContext();
+        this.config = Gamesaw.getInstance();
 
         this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
@@ -67,7 +68,7 @@ export class ParticleRenderer {
         gl.enable(gl.BLEND);
         gl.blendFunc(emitter.blendSrc, emitter.blendDst);
 
-        gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
         gl.bindTexture(gl.TEXTURE_2D, emitter.texture.texture);
 
         let col: number[] = emitter.color.getRGBAFloat();
