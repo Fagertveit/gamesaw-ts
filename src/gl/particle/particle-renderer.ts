@@ -1,6 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { ParticleEmitter } from './particle-emitter';
 import { ParticleSystem } from './particle-system';
+import { Surface3d } from '../../graphics/surface3d';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute float a_pointSize;\n' +
@@ -36,9 +37,9 @@ export class ParticleRenderer {
     public height: number = 600;
 
     constructor(gl: WebGLRenderingContext) {
-        this.gl = gl;
+        this.gl = Surface3d.getInstance().getContext();
 
-        this.program = new Program(this.gl);
+        this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
         this.program.loadShader(ShaderType.FRAGMENT, fragmentShader);
         this.program.createProgram();

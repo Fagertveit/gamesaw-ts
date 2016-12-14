@@ -5,6 +5,8 @@ import { Http, AJAXResponse } from '../../utility/http';
 import { ResourceManager } from '../../utility/resource-manager';
 import { Renderer2d } from '../renderer2d/renderer2d';
 import { Rectangle } from '../../geometry/rectangle';
+import { Surface3d } from '../../graphics/surface3d';
+import { Gamesaw } from '../../gamesaw';
 
 export interface Tiled {
     width: number;
@@ -57,6 +59,7 @@ export interface TileInfo {
 export class Tilemap {
     public gl: WebGLRenderingContext;
     private resourceManager: ResourceManager;
+    private config: Gamesaw;
     public layers: TilemapLayer[] = [];
     public tilesets: Tileset[] = [];
     public width: number;
@@ -72,9 +75,11 @@ export class Tilemap {
 
     private http: Http;
 
-    constructor(gl?: WebGLRenderingContext) {
-        if (gl) {
-            this.gl = gl;
+    constructor() {
+        this.config = Gamesaw.getInstance();
+
+        if (this.config.getRenderMode() === 'webgl') {
+            this.gl = Surface3d.getInstance().getContext();
         }
 
         this.resourceManager = ResourceManager.getInstance();

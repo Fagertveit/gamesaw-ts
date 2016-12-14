@@ -1,6 +1,7 @@
 import { Texture } from '../texture';
 import { Renderer2d } from '../renderer2d/renderer2d';
 import { RenderCall } from '../renderer2d/render-call';
+import { Surface3d } from '../../graphics/surface3d';
 
 export class Tileset {
     public gl: WebGLRenderingContext;
@@ -20,7 +21,7 @@ export class Tileset {
 
     constructor(gl: WebGLRenderingContext, name: string, image: string, imageWidth: number, imageHeight: number, firstgid: number,
         margin: number, spacing: number, columns: number, tileCount: number, tileWidth: number, tileHeight: number) {
-        this.gl = gl;
+        this.gl = Surface3d.getInstance().getContext();
         this.name = name;
         this.image = image;
         this.imageWidth = imageWidth;
@@ -34,7 +35,7 @@ export class Tileset {
         this.tileHeight = tileHeight;
 
         this.lastgid = this.firstgid + this.tileCount - 1;
-        this.texture = new Texture(this.gl, this.image);
+        this.texture = new Texture(this.image);
     }
 
     public renderTile(renderer: Renderer2d, x: number, y: number, id: number): void {

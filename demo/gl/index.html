@@ -21,12 +21,12 @@
 <script>
     var app = new gamesaw.Application(800, 600, 1);
     var testScene = app.sceneManager.addScene('test');
-    testScene.add3dSurface('test');
-    var ctx = testScene.getContext('test');
-    ctx.clearColor(0, 0, 0, 1);
-    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
-    var texture1 = new gamesaw.GL.Texture(ctx, '../img/pixel.png');
-    var texture2 = new gamesaw.GL.Texture(ctx, '../img/tileset02.png');
+
+    var gl = app.surface.getContext();
+    gl.clearColor(0, 0, 0, 1);
+    var renderer = new gamesaw.GL.Render2d.Renderer2d(gl);
+    var texture1 = new gamesaw.GL.Texture('../img/pixel.png');
+    var texture2 = new gamesaw.GL.Texture('../img/tileset02.png');
     var sprite1 = new gamesaw.GL.Sprite(texture1, 64, 64);
     var sprite2 = new gamesaw.GL.Sprite(texture2, 64, 64);
     var scale = 1.0;
@@ -36,7 +36,7 @@
     sprite2.setUV(0.0, 0.0, 1.0, 1.0);
 
     testScene.render = function(delta) {
-        this.clear('test');
+        app.surface.clear();
         if (texture1.ready && texture2.ready) {
             /*for (var i = 0; i < 1000; i++) {
                 var x = Math.random() * 640;

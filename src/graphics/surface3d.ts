@@ -1,25 +1,46 @@
-import { Surface } from './surface.abstract';
 import { Color } from './color';
 import { Gamesaw } from '../gamesaw';
 
-export class Surface3d extends Surface {
+export class Surface3d {
+    private static instance: Surface3d = new Surface3d();
     public gl: WebGLRenderingContext;
     public config: Gamesaw;
-    public id: string;
     public clearColor: Color = new Color(0, 0, 0, 1);
     public canvas: HTMLCanvasElement;
 
-    constructor(id: string) {
-        super();
+    constructor() {
+        if (Surface3d.instance) {
+            throw new Error('Error: Instantiation failed, Use Surface3d.getInstance() instead of new.');
+        }
+
+        Surface3d.instance = this;
         this.config = Gamesaw.getInstance();
-
-        this.id = id;
-
-        this.createCanvas();
-        this.init();
     }
 
-    private init(): void {
+    public static getInstance(): Surface3d {
+        return Surface3d.instance;
+    }
+
+    public createCanvas(): void {
+        let container = document.getElementById(this.config.getContainerId());
+
+        this.canvas = document.createElement('canvas');
+
+        if (this.config.doScale()) {
+            this.canvas.setAttribute('width', String(this.config.getRenderResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getRenderResolutionHeight()));
+        } else {
+            this.canvas.setAttribute('width', String(this.config.getResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getResolutionHeight()));
+        }
+
+        this.canvas.style.position = 'absolute';
+
+        container.appendChild(this.canvas);
+    };
+
+    public init(): void {
+        this.createCanvas();
         this.gl = this.getContext();
 
         let colorFloats = this.clearColor.getRGBAFloat();
@@ -42,5 +63,9 @@ export class Surface3d extends Surface {
     public getContext(): WebGLRenderingContext {
         return this.canvas.getContext('webgl', { preserveDrawingBuffer: true }) ||
             this.canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
+    }
+
+    public toDataUrl(): string {
+        return this.canvas.toDataURL('image/png');
     }
 }

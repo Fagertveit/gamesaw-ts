@@ -1,6 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { RenderCall } from '../renderer2d/render-call';
 import { FrameBuffer } from '../renderer2d/framebuffer';
+import { Surface3d } from '../../graphics/surface3d';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -58,12 +59,12 @@ export class Bloom {
     public width: number;
     public height: number;
 
-    constructor(gl: WebGLRenderingContext, width: number, height: number) {
-        this.gl = gl;
+    constructor(width: number, height: number) {
+        this.gl = Surface3d.getInstance().getContext();
         this.width = width;
         this.height = height;
 
-        this.combinationProgram = new Program(this.gl);
+        this.combinationProgram = new Program();
         this.combinationProgram.loadShader(ShaderType.VERTEX, vertexShader);
         this.combinationProgram.loadShader(ShaderType.FRAGMENT, combineFragmentShader);
         this.combinationProgram.createProgram();
@@ -74,7 +75,7 @@ export class Bloom {
     public init(): void {
         let gl = this.gl;
 
-        this.glowFramebuffer = new FrameBuffer(gl, this.width, this.height);
+        this.glowFramebuffer = new FrameBuffer(this.width, this.height);
 
         this.blendMode = gl.getUniformLocation(this.combinationProgram.program, 'u_blend_mode');
         this.resolution = gl.getUniformLocation(this.combinationProgram.program, 'u_resolution');

@@ -1,4 +1,5 @@
 import { ResourceManager } from '../utility/resource-manager';
+import { Surface3d } from '../graphics/surface3d';
 
 export class Texture {
     private gl: WebGLRenderingContext;
@@ -11,8 +12,8 @@ export class Texture {
     public loaded: boolean = false;
     public ready: boolean = false;
 
-    constructor(gl: WebGLRenderingContext, url?: string) {
-        this.gl = gl;
+    constructor(url?: string) {
+        this.gl = Surface3d.getInstance().getContext();
 
         this.resourceManager = ResourceManager.getInstance();
 

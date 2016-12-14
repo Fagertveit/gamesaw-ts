@@ -5,6 +5,7 @@ import { ResourceManager } from '../../utility/resource-manager';
 import { FontRenderer } from './font-renderer';
 import { RenderCall } from '../renderer2d/render-call';
 import { BitmapFont, Glyph } from './bitmap-font';
+import { Surface3d } from '../../graphics/surface3d';
 
 export interface FontTexture {
     [index: number]: Texture;
@@ -28,8 +29,8 @@ export class Font {
     public align: number = Align.LEFT;
     private http: Http;
 
-    constructor(gl: WebGLRenderingContext, configUrl?: string) {
-        this.gl = gl;
+    constructor(configUrl?: string) {
+        this.gl = Surface3d.getInstance().getContext();
         this.http = new Http(false);
 
         this.resourceManager = ResourceManager.getInstance();
@@ -98,7 +99,7 @@ export class Font {
                 file: file
             };
 
-            this.texturePage[id] = new Texture(this.gl, file);
+            this.texturePage[id] = new Texture(file);
         }
 
         for (let i = 0; i < char.length; i += 1) {

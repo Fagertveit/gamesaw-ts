@@ -5,7 +5,7 @@
     <script src="../../dist/gamesaw.js"></script>
     <style>
         .container {
-            width: 800px;
+            width: 1200px;
             margin: 10px auto;
         }
     </style>
@@ -19,24 +19,24 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(800, 600, 60);
+    var app = new gamesaw.Application(360, 280, 30, 1200, 900);
     var testScene = app.sceneManager.addScene('test');
-    testScene.add3dSurface('test');
-    var ctx = testScene.getContext('test');
+    var ctx = app.surface.getContext();
     ctx.clearColor(0, 0, 0, 1);
-    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
-    var texture = new gamesaw.GL.Texture(ctx, '../img/pixel.png');
+    var renderer = new gamesaw.GL.Render2d.Renderer2d();
+    var texture = new gamesaw.GL.Texture('../img/pixel.png');
     var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
     var scale = 1.0;
     var angle = 0;
     var scaleUp = true;
     sprite.setUV(0.0, 0.0, 1.0, 1.0);
 
-    var particleRenderer = new gamesaw.GL.Particle.ParticleRenderer(ctx);
-    var particle = new gamesaw.GL.Texture(ctx, '../img/alpha_particle.png');
-    var emitter = new gamesaw.GL.Particle.ParticleEmitter(ctx);
+    var particleRenderer = new gamesaw.GL.Particle.ParticleRenderer();
+    var particle = new gamesaw.GL.Texture('../img/alpha_particle.png');
+    var emitter = new gamesaw.GL.Particle.ParticleEmitter();
 
-    var mouse = new gamesaw.Input.Mouse();
+    var mouse = gamesaw.Input.Mouse.getInstance();
+    mouse.init();
 
     emitter.setup(
         particle,
@@ -57,7 +57,7 @@
     );
 
     testScene.render = function(delta) {
-        this.clear('test');
+        app.surface.clear();
 
         particleRenderer.render(emitter);
     };

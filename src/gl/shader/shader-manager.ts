@@ -1,4 +1,5 @@
 import { Program } from './program';
+import { Surface3d } from '../../graphics/surface3d';
 
 interface ProgramList {
     [index: string]: Program;
@@ -9,11 +10,11 @@ export class ShaderManager {
     public gl: WebGLRenderingContext;
 
     constructor(gl: WebGLRenderingContext) {
-        this.gl = gl;
+        this.gl = Surface3d.getInstance().getContext();
     }
 
     public createProgram(fragmentShaderUrl: string, vertexShaderUrl: string, id: string) {
-        this.programs[id] = new Program(this.gl, fragmentShaderUrl, vertexShaderUrl);
+        this.programs[id] = new Program(fragmentShaderUrl, vertexShaderUrl);
     }
 
     public getProgram(id: string): WebGLProgram {

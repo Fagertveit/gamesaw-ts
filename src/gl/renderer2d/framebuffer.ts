@@ -1,3 +1,5 @@
+import { Surface3d } from '../../graphics/surface3d';
+
 export class FrameBuffer {
     public gl: WebGLRenderingContext;
     public texture: WebGLTexture;
@@ -5,8 +7,8 @@ export class FrameBuffer {
     public width: number;
     public height: number;
 
-    constructor(gl: WebGLRenderingContext, width: number, height: number) {
-        this.gl = gl;
+    constructor(width: number, height: number) {
+        this.gl = Surface3d.getInstance().getContext();
         this.width = width;
         this.height = height;
 

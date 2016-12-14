@@ -1,6 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { Color } from '../../graphics/color';
 import { RenderCall } from '../renderer2d/render-call';
+import { Surface3d } from '../../graphics/surface3d';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -43,10 +44,10 @@ export class FontRenderer {
 
     public renderCalls: RenderCalls = {};
 
-    constructor(gl: WebGLRenderingContext) {
-        this.gl = gl;
+    constructor() {
+        this.gl = Surface3d.getInstance().getContext();
 
-        this.program = new Program(this.gl);
+        this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
         this.program.loadShader(ShaderType.FRAGMENT, fragmentShader);
         this.program.createProgram();

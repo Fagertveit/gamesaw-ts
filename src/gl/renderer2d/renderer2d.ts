@@ -2,6 +2,7 @@ import { Program, ShaderType } from '../shader/program';
 import { RenderCall } from './render-call';
 import { FrameBuffer } from './framebuffer';
 import { Gamesaw } from '../../gamesaw';
+import { Surface3d } from '../../graphics/surface3d';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -46,15 +47,15 @@ export class Renderer2d {
 
     public renderCalls: RenderCall[] = [];
 
-    constructor(gl: WebGLRenderingContext) {
-        this.gl = gl;
+    constructor() {
+        this.gl = Surface3d.getInstance().getContext();
         this.config = Gamesaw.getInstance();
 
         if (this.config.doScale()) {
-            this.scaleFBO = new FrameBuffer(this.gl, this.config.getFboTextureSize(), this.config.getFboTextureSize());
+            this.scaleFBO = new FrameBuffer(this.config.getFboTextureSize(), this.config.getFboTextureSize());
         }
 
-        this.program = new Program(this.gl);
+        this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
         this.program.loadShader(ShaderType.FRAGMENT, fragmentShader);
         this.program.createProgram();

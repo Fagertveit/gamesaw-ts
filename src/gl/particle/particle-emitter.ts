@@ -3,6 +3,7 @@ import { ParticleRenderer } from './particle-renderer';
 import { Point } from '../../geometry/index';
 import { Texture } from '../texture';
 import { Color } from '../../graphics/color';
+import { Surface3d } from '../../graphics/surface3d';
 import { Http } from '../../utility/http';
 
 interface AJAXResponse {
@@ -42,10 +43,10 @@ export class ParticleEmitter {
 
     private http: Http;
 
-    constructor(gl: WebGLRenderingContext) {
-        this.gl = gl;
-        this.blendSrc = gl.SRC_ALPHA;
-        this.blendDst = gl.ONE;
+    constructor() {
+        this.gl = Surface3d.getInstance().getContext();
+        this.blendSrc = this.gl.SRC_ALPHA;
+        this.blendDst = this.gl.ONE;
 
         this.http = new Http(false);
     }

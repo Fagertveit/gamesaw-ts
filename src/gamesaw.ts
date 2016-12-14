@@ -8,6 +8,7 @@ export class Gamesaw {
     public widthRatio: number;
     public heightRatio: number;
     public fboTextureSize: number = 1024;
+    public renderMode: string = 'webgl';
 
     constructor() {
         if (Gamesaw.instance) {
@@ -27,6 +28,14 @@ export class Gamesaw {
 
     public getContainerId(): string {
         return this.containerId;
+    }
+
+    public setRenderMode(mode: string): void {
+        this.renderMode = mode;
+    }
+
+    public getRenderMode(): string {
+        return this.renderMode;
     }
 
     public setRenderResolution(width: number, height: number): void {

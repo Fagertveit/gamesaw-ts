@@ -1,5 +1,6 @@
 import { Http } from '../../utility/http';
 import { ResourceManager } from '../../utility/resource-manager';
+import { Surface3d } from '../../graphics/surface3d';
 
 interface AJAXResponse {
     responseText?: string;
@@ -18,8 +19,8 @@ export class Program {
     private http: Http;
     private resourceManager: ResourceManager;
 
-    constructor(gl: WebGLRenderingContext, fragmentShaderUrl?: string, vertexShaderUrl?: string) {
-        this.gl = gl;
+    constructor(fragmentShaderUrl?: string, vertexShaderUrl?: string) {
+        this.gl = Surface3d.getInstance().getContext();
         this.http = new Http(false);
 
         this.resourceManager = ResourceManager.getInstance();

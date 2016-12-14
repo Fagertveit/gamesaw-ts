@@ -1,6 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { RenderCall } from '../renderer2d/render-call';
 import { FrameBuffer } from '../renderer2d/framebuffer';
+import { Surface3d } from '../../graphics/surface3d';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -79,12 +80,12 @@ export class Blur {
     public width: number;
     public height: number;
 
-    constructor(gl: WebGLRenderingContext, width: number, height: number) {
-        this.gl = gl;
+    constructor(width: number, height: number) {
+        this.gl = Surface3d.getInstance().getContext();
         this.width = width;
         this.height = height;
 
-        this.blurProgram = new Program(this.gl);
+        this.blurProgram = new Program();
         this.blurProgram.loadShader(ShaderType.VERTEX, vertexShader);
         this.blurProgram.loadShader(ShaderType.FRAGMENT, blurFragmentShader);
         this.blurProgram.createProgram();
@@ -95,8 +96,8 @@ export class Blur {
     public init(): void {
         let gl = this.gl;
 
-        this.horizontalFBO = new FrameBuffer(gl, this.width, this.height);
-        this.verticalFBO = new FrameBuffer(gl, this.width, this.height);
+        this.horizontalFBO = new FrameBuffer(this.width, this.height);
+        this.verticalFBO = new FrameBuffer(this.width, this.height);
 
         this.texelSize = gl.getUniformLocation(this.blurProgram.program, 'u_texel_size');
         this.blurAmount = gl.getUniformLocation(this.blurProgram.program, 'u_blur_amount');

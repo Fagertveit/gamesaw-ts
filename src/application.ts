@@ -1,8 +1,11 @@
 import { SceneManager } from './scene-manager';
+import { Surface2d } from './graphics/surface2d';
+import { Surface3d } from './graphics/surface3d';
 import { Gamesaw } from './gamesaw';
 
 export class Application {
     public sceneManager: SceneManager;
+    public surface: Surface3d;
     public config: Gamesaw;
     public active: boolean = true;
     public applicationTimer: number;
@@ -15,6 +18,12 @@ export class Application {
 
     constructor(width: number, height: number, targetFps?: number, renderWidth?: number, renderHeight?: number) {
         this.config = Gamesaw.getInstance();
+
+        if (this.config.renderMode === 'webgl') {
+            this.surface = Surface3d.getInstance();
+            this.surface.init();
+        }
+
         this.config.setResolution(width, height);
 
         if (renderWidth && renderHeight) {

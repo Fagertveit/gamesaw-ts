@@ -1,20 +1,37 @@
-import { Surface } from './surface.abstract';
 import { Color } from './color';
 import { Gamesaw } from '../gamesaw';
 
-export class Surface2d extends Surface {
+export class Surface2d {
     public config: Gamesaw;
     public id: string = 'canvas-2d';
     public canvas: HTMLCanvasElement;
     public clearColor: Color = new Color(0, 0, 0, 1);
 
     constructor(id: string) {
-        super();
         this.config = Gamesaw.getInstance();
         this.id = id;
 
         this.createCanvas();
     }
+
+    public createCanvas(): void {
+        let container = document.getElementById(this.config.getContainerId());
+
+        this.canvas = document.createElement('canvas');
+        this.canvas.setAttribute('id', this.id);
+
+        if (this.config.doScale()) {
+            this.canvas.setAttribute('width', String(this.config.getRenderResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getRenderResolutionHeight()));
+        } else {
+            this.canvas.setAttribute('width', String(this.config.getResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getResolutionHeight()));
+        }
+
+        this.canvas.style.position = 'absolute';
+
+        container.appendChild(this.canvas);
+    };
 
     public clear(color?: Color): void {
         if (color) {
@@ -35,5 +52,9 @@ export class Surface2d extends Surface {
 
     public getContext(): CanvasRenderingContext2D {
         return this.canvas.getContext('2d');
+    }
+
+    public toDataUrl(): string {
+        return this.canvas.toDataURL('image/png');
     }
 }
