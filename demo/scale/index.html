@@ -20,10 +20,13 @@
 
 <script>
     var app = new gamesaw.Application(64, 64, 1, 800, 600);
+
     var testScene = app.sceneManager.addScene('test');
     var ctx = app.surface.getContext('test');
+
     ctx.clearColor(0, 0, 0, 1);
-    var renderer = new gamesaw.GL.Render2d.Renderer2d();
+    var renderer = gamesaw.GL.Render2d.Renderer2d.getInstance();
+    renderer.init();
     var texture = new gamesaw.GL.Texture('../img/pixel.png');
     var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
     var mouse = gamesaw.Input.Mouse.getInstance();
@@ -34,7 +37,7 @@
     testScene.render = function(delta) {
         app.surface.clear();
         if (texture.ready) {
-            sprite.render(renderer, 0, 0);
+            sprite.render(0, 0);
         }
         renderer.execute();
     };

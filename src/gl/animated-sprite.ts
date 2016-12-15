@@ -63,27 +63,27 @@ export class AnimatedSprite {
         }
     }
 
-    public render(renderer: Renderer2d, x: number, y: number): void {
-        this.frames[this.currentFrame].render(renderer, x, y);
+    public render(x: number, y: number): void {
+        this.frames[this.currentFrame].render(x, y);
     }
 
-    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number, scaleY?: number): void {
+    public renderScale(x: number, y: number, scale: number, scaleY?: number): void {
         if (scaleY) {
-            this.frames[this.currentFrame].renderScale(renderer, x, y, scale, scaleY);
+            this.frames[this.currentFrame].renderScale(x, y, scale, scaleY);
         } else {
-            this.frames[this.currentFrame].renderScale(renderer, x, y, scale);
+            this.frames[this.currentFrame].renderScale(x, y, scale);
         }
     }
 
-    public renderAngle(renderer: Renderer2d, x: number, y: number, angle: number): void {
-        this.frames[this.currentFrame].renderAngle(renderer, x, y, angle);
+    public renderAngle(x: number, y: number, angle: number): void {
+        this.frames[this.currentFrame].renderAngle(x, y, angle);
     }
 
-    public renderAngleScale(renderer: Renderer2d, x: number, y: number, angle: number, scale: number, scaleY?: number): void {
+    public renderAngleScale(x: number, y: number, angle: number, scale: number, scaleY?: number): void {
         if (scaleY) {
-            this.frames[this.currentFrame].renderAngleScale(renderer, x, y, angle, scale, scaleY);
+            this.frames[this.currentFrame].renderAngleScale(x, y, angle, scale, scaleY);
         } else {
-            this.frames[this.currentFrame].renderAngleScale(renderer, x, y, angle, scale);
+            this.frames[this.currentFrame].renderAngleScale(x, y, angle, scale);
         }
     }
 }

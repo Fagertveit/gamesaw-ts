@@ -30,6 +30,7 @@ const fragmentShader: string = 'precision mediump float;\n' +
 '}\n';
 
 export class Renderer2d {
+    private static instance: Renderer2d = new Renderer2d();
     public gl: WebGLRenderingContext;
     public config: Gamesaw;
     public scaleFBO: FrameBuffer;
@@ -44,12 +45,31 @@ export class Renderer2d {
     public width: number = 800;
     public height: number = 600;
     public flipY: number = 0;
+    public renderModeSrc: number;
+    public renderModeDst: number;
 
     public renderCalls: RenderCall[] = [];
 
     constructor() {
+        if (Renderer2d.instance) {
+            throw new Error('Error: Instantiation failed, Use Renderer2d.getInstance() instead of new.');
+        }
+
+        Renderer2d.instance = this;
+    }
+
+    public static getInstance(): Renderer2d {
+        return Renderer2d.instance;
+    }
+
+    public init(): void {
         this.gl = Surface3d.getInstance().getContext();
         this.config = Gamesaw.getInstance();
+
+        let gl = this.gl;
+
+        this.renderModeSrc = this.gl.SRC_ALPHA;
+        this.renderModeDst = this.gl.ONE_MINUS_SRC_ALPHA;
 
         if (this.config.doScale()) {
             this.scaleFBO = new FrameBuffer(this.config.getFboTextureSize(), this.config.getFboTextureSize());
@@ -60,12 +80,6 @@ export class Renderer2d {
         this.program.loadShader(ShaderType.FRAGMENT, fragmentShader);
         this.program.createProgram();
 
-        this.init();
-    }
-
-    public init(): void {
-        let gl = this.gl;
-
         this.resolution = gl.getUniformLocation(this.program.program, 'u_resolution');
         this.flip = gl.getUniformLocation(this.program.program, 'u_flip');
         this.position = gl.getAttribLocation(this.program.program, 'a_position');
@@ -74,6 +88,19 @@ export class Renderer2d {
         this.vertexBuffer = gl.createBuffer();
         this.indexBuffer = gl.createBuffer();
         this.texCoordBuffer = gl.createBuffer();
+    }
+
+    public setRenderMode(src: number, dst: number): void {
+        this.renderModeSrc = src;
+        this.renderModeDst = dst;
+    }
+
+    public setRenderModeSrc(src: number): void {
+        this.renderModeSrc = src;
+    }
+
+    public setRenderModeDst(dst: number): void {
+        this.renderModeDst = dst;
     }
 
     public addCall(renderCall: RenderCall) {
@@ -118,7 +145,7 @@ export class Renderer2d {
         let gl = this.gl;
         gl.useProgram(this.program.program);
 
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(this.renderModeSrc, this.renderModeDst);
         gl.cullFace(gl.FRONT_AND_BACK);
         gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
 

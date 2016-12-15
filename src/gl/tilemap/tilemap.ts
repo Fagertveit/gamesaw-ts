@@ -193,7 +193,7 @@ export class Tilemap {
         return tile;
     }
 
-    public render(renderer: Renderer2d, x: number, y: number, scale?: number, scaleY?: number) {
+    public render(x: number, y: number, scale?: number, scaleY?: number) {
         for (let layer of this.layers) {
             if (layer.isVisible()) {
                 for (let i in layer.tiles) {
@@ -204,7 +204,7 @@ export class Tilemap {
                     if (tileData.tileid !== 0) {
                         for (let j in this.tilesets) {
                             if (tileData.tileid >= this.tilesets[j].firstgid && tileData.tileid <= this.tilesets[j].lastgid) {
-                                this.tilesets[j].renderTile(renderer, tileX, tileY, tileData.tileid);
+                                this.tilesets[j].renderTile(tileX, tileY, tileData.tileid);
                                 break;
                             }
                         }
@@ -214,7 +214,7 @@ export class Tilemap {
         }
     }
 
-    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number) {
+    public renderScale(x: number, y: number, scale: number) {
         for (let layer of this.layers) {
             if (layer.isVisible()) {
                 for (let i in layer.tiles) {
@@ -225,7 +225,7 @@ export class Tilemap {
                     if (tileData.tileid !== 0) {
                         for (let j in this.tilesets) {
                             if (tileData.tileid >= this.tilesets[j].firstgid && tileData.tileid <= this.tilesets[j].lastgid) {
-                                this.tilesets[j].renderTileScale(renderer, tileX, tileY, tileData.tileid, scale);
+                                this.tilesets[j].renderTileScale(tileX, tileY, tileData.tileid, scale);
                                 break;
                             }
                         }

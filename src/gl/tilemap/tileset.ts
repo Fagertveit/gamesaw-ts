@@ -38,7 +38,7 @@ export class Tileset {
         this.texture = new Texture(this.image);
     }
 
-    public renderTile(renderer: Renderer2d, x: number, y: number, id: number): void {
+    public renderTile(x: number, y: number, id: number): void {
         let row: number = Math.floor((id - this.firstgid) / this.columns);
         let col: number = (id - this.firstgid) % this.columns;
 
@@ -60,10 +60,10 @@ export class Tileset {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderTileScale(renderer: Renderer2d, x: number, y: number, id: number, scale: number, scaleY?: number) {
+    public renderTileScale(x: number, y: number, id: number, scale: number, scaleY?: number) {
         let row: number = Math.floor((id - this.firstgid) / this.columns);
         let col: number = (id - this.firstgid) % this.columns;
 
@@ -85,10 +85,10 @@ export class Tileset {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderTileAngle(renderer: Renderer2d, x: number, y: number, id: number, angle: number, scale?: number, scaleY?: number) {
+    public renderTileAngle(x: number, y: number, id: number, angle: number, scale?: number, scaleY?: number) {
 
     }
 }

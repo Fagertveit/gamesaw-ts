@@ -1,4 +1,5 @@
 import { Texture } from './texture';
+import { FrameBuffer } from './renderer2d/framebuffer';
 import { Renderer2d } from './renderer2d/renderer2d';
 import { RenderCall } from './renderer2d/render-call';
 import { Vector2 } from '../geometry/vector2d';
@@ -8,9 +9,9 @@ export class Sprite {
     public uv: number[];
     public width: number;
     public height: number;
-    public texture: Texture;
+    public texture: Texture | FrameBuffer;
 
-    constructor(texture?: Texture, width?: number, height?: number, uv?: number[]) {
+    constructor(texture?: Texture | FrameBuffer, width?: number, height?: number, uv?: number[]) {
         if (texture) {
             this.texture = texture;
         }
@@ -33,7 +34,7 @@ export class Sprite {
         this.uv = [(x / this.texture.width), (y / this.texture.height), ((x + width) / this.texture.width), ((y + height) / this.texture.height)];
     }
 
-    public render(renderer: Renderer2d, x: number, y: number): void {
+    public render(x: number, y: number): void {
         let renderCall: RenderCall = new RenderCall();
 
         renderCall.texture = this.texture.texture;
@@ -42,10 +43,10 @@ export class Sprite {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderScale(renderer: Renderer2d, x: number, y: number, scale: number, scaleY?: number): void {
+    public renderScale(x: number, y: number, scale: number, scaleY?: number): void {
         let renderCall: RenderCall = new RenderCall();
 
         if (scaleY) {
@@ -66,10 +67,10 @@ export class Sprite {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderAngle(renderer: Renderer2d, x: number, y: number, angle: number): void {
+    public renderAngle(x: number, y: number, angle: number): void {
         let vec: Vector2[] = [];
         let px: number = x + (this.width / 2);
         let py: number = y + (this.height / 2);
@@ -94,10 +95,10 @@ export class Sprite {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderAngleScale(renderer: Renderer2d, x: number, y: number, angle: number, scale: number, scaleY?: number): void {
+    public renderAngleScale(x: number, y: number, angle: number, scale: number, scaleY?: number): void {
         let vec: Vector2[] = [];
         let px: number = x + ((this.width * scale) / 2);
         let py: number = y + ((this.height * scale) / 2);
@@ -129,10 +130,10 @@ export class Sprite {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 
-    public renderFBO(renderer: Renderer2d) {
+    public renderFBO() {
         let renderCall: RenderCall = new RenderCall();
 
         renderCall.texture = this.texture.texture;
@@ -141,6 +142,6 @@ export class Sprite {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        Renderer2d.getInstance().addCall(renderCall);
     }
 }

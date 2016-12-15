@@ -19,20 +19,17 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(360, 280, 30, 800, 600);
+    var app = new gamesaw.Application(64, 64, 10, 800, 600);
     var testScene = app.sceneManager.addScene('test');
     var ctx = app.surface.getContext();
     ctx.clearColor(0, 0, 0, 1);
     var renderer = new gamesaw.GL.Render2d.Renderer2d();
     var texture = new gamesaw.GL.Texture('../img/pixel.png');
     var sprite = new gamesaw.GL.Sprite(texture, 64, 64);
-    var scale = 1.0;
-    var angle = 0;
-    var scaleUp = true;
     sprite.setUV(0.0, 0.0, 1.0, 1.0);
 
     var particleRenderer = new gamesaw.GL.Particle.ParticleRenderer();
-    var particle = new gamesaw.GL.Texture('../img/alpha_particle.png');
+    var particle = new gamesaw.GL.Texture('../img/pixel_particle.png');
     var emitter = new gamesaw.GL.Particle.ParticleEmitter();
 
     var mouse = gamesaw.Input.Mouse.getInstance();
@@ -40,30 +37,44 @@
 
     emitter.setup(
         particle,
-        new gamesaw.Geometry.Point(320, 240),
+        new gamesaw.Geometry.Point(64, 64),
         new gamesaw.Geometry.Point(-0.3, -0.8), new gamesaw.Geometry.Point(0.3, -0.7),
-        10.0, 6.4,
-        32, 16,
+        5.0, 3.0,
+        8, 4,
         1000, 800,
         0.2,
         0.0,
         0.0,
         0.0,
         0,
-        1000,
+        10,
         0,
         true,
         new gamesaw.Graphics.Color(240, 175, 25, 0.4)
     );
 
     testScene.render = function(delta) {
-        app.surface.clear();
+        ctx.clear(ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT);
+        particleRenderer.generateFBO(emitter);
 
-        particleRenderer.render(emitter);
+        sprite.render(renderer, 0, 0);
+
+        renderer.execute();
+
+        var particleSprite = new gamesaw.GL.Sprite(particleRenderer.fbo, 64, 64, [0, 0, 64, 64]);
+        particleSprite.render(renderer, 0, 0);
+        renderer.setRenderMode(ctx.SRC_ALPHA, ctx.ONE);
+        renderer.execute();
+        renderer.setRenderMode(ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA);
     };
     testScene.update = function(delta) {
         emitter.pos = new gamesaw.Geometry.Point(mouse.x, mouse.y);
         emitter.update(delta);
+
+        if (mouse.button[0]) {
+            console.log('Clicked at ' + mouse.x + ' : ' + mouse.y);
+            mouse.button[0] = false;
+        }
     };
 
     app.init();

@@ -1,6 +1,7 @@
 import { Program, ShaderType } from '../shader/program';
 import { ParticleEmitter } from './particle-emitter';
 import { ParticleSystem } from './particle-system';
+import { FrameBuffer } from '../renderer2d/framebuffer';
 import { Surface3d } from '../../graphics/surface3d';
 import { Gamesaw } from '../../gamesaw';
 
@@ -11,7 +12,7 @@ const vertexShader: string = 'attribute vec2 a_position;\n' +
 '	vec2 zeroToOne = a_position / u_resolution;\n' +
 '	vec2 zeroToTwo = zeroToOne * 2.0;\n' +
 '	vec2 clipSpace = zeroToTwo - 1.0;\n' +
-'	gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\n' +
+'	gl_Position = vec4(clipSpace * vec2(1, 1), 0, 1);\n' +
 '	gl_PointSize = a_pointSize;\n' +
 '}\n';
 
@@ -27,6 +28,7 @@ const fragmentShader: string = 'precision mediump float;\n' +
 
 export class ParticleRenderer {
     public gl: WebGLRenderingContext;
+    public fbo: FrameBuffer;
     public config: Gamesaw;
     public program: Program;
     public resolution: WebGLUniformLocation;
@@ -36,9 +38,11 @@ export class ParticleRenderer {
     public vertexBuffer: WebGLBuffer;
     public sizeBuffer: WebGLBuffer;
 
-    constructor(gl: WebGLRenderingContext) {
+    constructor() {
         this.gl = Surface3d.getInstance().getContext();
         this.config = Gamesaw.getInstance();
+
+        this.fbo = new FrameBuffer(this.config.getFboTextureSize(), this.config.getFboTextureSize());
 
         this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
@@ -60,8 +64,16 @@ export class ParticleRenderer {
         this.sizeBuffer = gl.createBuffer();
     }
 
+    public generateFBO(emitter: ParticleEmitter) {
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fbo.fbo);
+        this.render(emitter);
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    }
+
     public render(emitter: ParticleEmitter): void {
         let gl = this.gl;
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         gl.useProgram(this.program.program);
 

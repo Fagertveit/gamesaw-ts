@@ -7,7 +7,6 @@ export class Gamesaw {
     public renderHeight: number;
     public widthRatio: number;
     public heightRatio: number;
-    public fboTextureSize: number = 1024;
     public renderMode: string = 'webgl';
 
     constructor() {
@@ -44,17 +43,6 @@ export class Gamesaw {
 
         this.widthRatio = this.width / this.renderWidth;
         this.heightRatio = this.height / this.renderHeight;
-
-        // We need to calculate the rendersize of the fbo, it needs to be power of 2
-        let measurableSize: number = Math.max(this.renderWidth, this.renderHeight);
-
-        if (measurableSize < 512) {
-            this.fboTextureSize = 512;
-        } else if (measurableSize < 1024) {
-            this.fboTextureSize = 1024;
-        } else if (measurableSize < 2048) {
-            this.fboTextureSize = 2048;
-        }
     }
 
     public getRenderResolution(): number[] {
@@ -70,7 +58,24 @@ export class Gamesaw {
     }
 
     public getFboTextureSize(): number {
-        return this.fboTextureSize;
+        let measurableSize: number;
+        let fboTextureSize: number;
+        // We need to calculate the rendersize of the fbo, it needs to be power of 2
+        if (this.doScale()) {
+            measurableSize = Math.max(this.renderWidth, this.renderHeight);
+        } else {
+            measurableSize = Math.max(this.width, this.height);
+        }
+
+        if (measurableSize < 512) {
+            fboTextureSize = 512;
+        } else if (measurableSize < 1024) {
+            fboTextureSize = 1024;
+        } else if (measurableSize < 2048) {
+            fboTextureSize = 2048;
+        }
+
+        return fboTextureSize;
     }
 
     public getWidthRatio(): number {
