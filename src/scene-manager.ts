@@ -22,12 +22,12 @@ export class SceneManager {
         }
     }
 
-    public addScene(id: string): Scene {
+    public addScene(id: string, scene: Scene): Scene {
         if (this.scenes[id] !== undefined) {
             throw new Error('Scene with id: ' + id + ' already exists.');
         }
 
-        this.scenes[id] = new Scene(this.application);
+        this.scenes[id] = scene;
 
         if (!this.activeScene) {
             this.activeScene = id;

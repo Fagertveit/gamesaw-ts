@@ -129,6 +129,7 @@ export class Renderer2d {
     public execute(): void {
         if (this.config.doScale()) {
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scaleFBO.fbo);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT);
             this.flipY = 1;
             this.flush();
             this.clear();

@@ -19,17 +19,18 @@
     </div>
 
 <script>
-    var app = new gamesaw.Application(800, 600, 30);
+    var app = new gamesaw.Application(640, 480, 30, 800, 600);
     var testScene = app.sceneManager.addScene('test');
-    testScene.add3dSurface('test');
-    var ctx = testScene.getContext('test');
-    var renderer = new gamesaw.GL.Render2d.Renderer2d(ctx);
+
+    var ctx = gamesaw.Graphics.Surface3d.getInstance().getContext();
+    var renderer = gamesaw.GL.Render2d.Renderer2d.getInstance();
+    renderer.init();
     ctx.clearColor(0, 0, 0, 1);
 
-    var tilemap = new gamesaw.GL.Tilemap.Tilemap(ctx);
+    var tilemap = new gamesaw.GL.Tilemap.Tilemap();
     tilemap.loadTiledMap('../data/testmap_original.json');
 
-    var pathTexture = new gamesaw.GL.Texture(ctx, '../img/path-tiles.png');
+    var pathTexture = new gamesaw.GL.Texture('../img/path-tiles.png');
     var pathTile = new gamesaw.GL.Sprite(pathTexture, 16, 16);
     pathTile.setUVByPixels(0, 0, 16, 16);
 
@@ -40,19 +41,20 @@
     var startNode = new gamesaw.AI.AStar.Node(2, 2);
 
     var pathFinder = new gamesaw.AI.AStar.PathFinder();
-    var mouse = new gamesaw.Input.Mouse();
+    var mouse = gamesaw.Input.Mouse.getInstance();
+    mouse.init();
 
     pathFinder.generatePathData(tilemap.layers[0], closedTiles);
 
     var path;
 
     testScene.render = function(delta) {
-        this.clear('test');
-        tilemap.renderScale(renderer, 0, 0, 3);
+        app.surface.clear();
+        tilemap.render(0, 0);
 
         if (path) {
             for (var i = 0; i < path.length; i += 1) {
-                pathTile.render(renderer, (path[i].x * 16 + 10), (path[i].y * 16 + 10));
+                pathTile.render((path[i].x * 16 + 10), (path[i].y * 16 + 10));
             }
         }
         renderer.execute();
