@@ -157,6 +157,41 @@ export class Tilemap {
 
     public getContainedTiles(container: Rectangle, scale?: number): TileInfo[] {
         let tiles: TileInfo[] = [];
+        let leftPosX: number;
+        let rightPosX: number;
+        let topPosY: number;
+        let bottomPosY: number;
+
+        // Let's find out our top left tile
+        let x = container.pos.x;
+        let y = container.pos.y;
+        let row: number = Math.floor(y / this.tileHeight);
+        let col: number = Math.floor(x / this.tileWidth);
+
+        leftPosX = col;
+        topPosY = row;
+
+        // Now let's grab the right bottom one
+        x = container.pos.x + container.width;
+        y = container.pos.y + container.height;
+        row = Math.floor(y / this.tileHeight);
+        col = Math.floor(x / this.tileWidth);
+
+        rightPosX = col;
+        bottomPosY = row;
+
+        for (let i: number = topPosY; i <= bottomPosY; i += 1) {
+            for (let j: number = leftPosX; j <= rightPosX; j += 1) {
+                let tileData = this.layers[this.activeLayer].getTileByPosition(j, i);
+
+                tiles.push({
+                    id: tileData.tileid,
+                    row: tileData.row,
+                    col: tileData.col,
+                    collider: new Rectangle(this.tileWidth * j, this.tileHeight * i, this.tileWidth, this.tileHeight)
+                });
+            }
+        }
 
         return tiles;
     }
@@ -169,8 +204,7 @@ export class Tilemap {
         if (scale) {
             let row: number = Math.floor(y / (this.tileHeight * scale));
             let col: number = Math.floor(x / (this.tileWidth * scale));
-            let pos: number = (row * this.width) + col;
-            let tileData = this.layers[this.activeLayer].getTile(pos);
+            let tileData = this.layers[this.activeLayer].getTileByPosition(col, row);
 
             tile.id = tileData.tileid;
             tile.row = tileData.row;
@@ -179,10 +213,7 @@ export class Tilemap {
         } else {
             let row: number = Math.floor(y / this.tileHeight);
             let col: number = Math.floor(x / this.tileWidth);
-            let pos: number = (row * this.width) + col;
-            let tileData = this.layers[this.activeLayer].getTile(pos);
-
-            console.log(col, row, pos);
+            let tileData = this.layers[this.activeLayer].getTileByPosition(col, row);
 
             tile.id = tileData.tileid;
             tile.row = tileData.row;
@@ -197,7 +228,7 @@ export class Tilemap {
         for (let layer of this.layers) {
             if (layer.isVisible()) {
                 for (let i in layer.tiles) {
-                    let tileData = layer.getTile(+i);
+                    let tileData = layer.getTileByIndex(+i);
                     let tileX: number = this.tileWidth * tileData.col + x;
                     let tileY: number = this.tileHeight * tileData.row + y;
 
@@ -218,7 +249,7 @@ export class Tilemap {
         for (let layer of this.layers) {
             if (layer.isVisible()) {
                 for (let i in layer.tiles) {
-                    let tileData = layer.getTile(+i);
+                    let tileData = layer.getTileByIndex(+i);
                     let tileX: number = (this.tileWidth * scale) * tileData.col + x;
                     let tileY: number = (this.tileHeight * scale) * tileData.row + y;
 

@@ -7,7 +7,8 @@ import * as Audio from './audio/index';
 import * as AI from './ai/index';
 
 import { Scene } from './scene';
+import { Gamesaw } from './gamesaw';
 import { Application } from './application';
 import { SceneManager } from './scene-manager';
 
-export { Audio, Geometry, Graphics, Utility, Input, Scene, Application, SceneManager, GL, AI };
+export { Gamesaw, Audio, Geometry, Graphics, Utility, Input, Scene, Application, SceneManager, GL, AI };

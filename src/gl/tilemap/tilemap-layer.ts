@@ -51,11 +51,20 @@ export class TilemapLayer {
         return this.visible;
     }
 
-    public getTile(i: number): Tile {
+    public getTileByIndex(i: number): Tile {
         return {
             tileid: this.tiles[i],
             row: Math.floor(i / this.width),
             col: i % this.width
+        };
+    }
+
+    public getTileByPosition(column: number, row: number): Tile {
+        let i: number = (row * this.width) + column;
+        return {
+            tileid: this.tiles[i],
+            row: row,
+            col: column
         };
     }
 }
