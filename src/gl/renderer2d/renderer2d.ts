@@ -126,6 +126,22 @@ export class Renderer2d {
         this.renderCalls = [];
     }
 
+    public bindFBO(): void {
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scaleFBO.fbo);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.flipY = 1;
+    }
+
+    public executeFBO(): void {
+        this.flush();
+        this.clear();
+    }
+
+    public unbindFBO(): void {
+        this.flipY = 0;
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    }
+
     public execute(): void {
         if (this.config.doScale()) {
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scaleFBO.fbo);
