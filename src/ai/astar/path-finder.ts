@@ -117,6 +117,6 @@ export class PathFinder {
             }
         }
 
-        return path;
+        return path.reverse();
     }
 }

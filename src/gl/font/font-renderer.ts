@@ -2,6 +2,7 @@ import { Program, ShaderType } from '../shader/program';
 import { Color } from '../../graphics/color';
 import { RenderCall } from '../renderer2d/render-call';
 import { Surface3d } from '../../graphics/surface3d';
+import { Gamesaw } from '../../gamesaw';
 
 const vertexShader: string = 'attribute vec2 a_position;\n' +
 'attribute vec2 a_texCoord;\n' +
@@ -30,6 +31,7 @@ interface RenderCalls {
 
 export class FontRenderer {
     public gl: WebGLRenderingContext;
+    public config: Gamesaw;
     public program: Program;
     public resolution: WebGLUniformLocation;
     public colorLocation: WebGLUniformLocation;
@@ -46,6 +48,7 @@ export class FontRenderer {
 
     constructor() {
         this.gl = Surface3d.getInstance().getContext();
+        this.config = Gamesaw.getInstance();
 
         this.program = new Program();
         this.program.loadShader(ShaderType.VERTEX, vertexShader);
@@ -95,7 +98,7 @@ export class FontRenderer {
         gl.useProgram(this.program.program);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.uniform2f(this.resolution, this.width, this.height);
+        gl.uniform2f(this.resolution, this.config.getResolutionWidth(), this.config.getResolutionHeight());
 
         for (let call in this.renderCalls) {
             gl.bindTexture(gl.TEXTURE_2D, this.renderCalls[call].texture);

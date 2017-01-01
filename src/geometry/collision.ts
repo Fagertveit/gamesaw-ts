@@ -48,7 +48,9 @@ export class Collider {
                 case GeometricEnum.CIRCLE:
                 return this.lineCircle();
                 case GeometricEnum.RECTANGLE:
-                return this.lineRectangle();
+                return this.lineRectangle(obj0 as Line, obj1 as Rectangle);
+                case GeometricEnum.AABB:
+                return this.lineAABB(obj0 as Line, obj1 as AABB);
                 case GeometricEnum.POLYGON:
                 return this.linePolygon();
                 default:
@@ -78,7 +80,7 @@ export class Collider {
                 case GeometricEnum.AABB:
                 return this.rectangleAABB(obj0 as Rectangle, obj1 as AABB);
                 case GeometricEnum.LINE:
-                return this.rectangleLine();
+                return this.rectangleLine(obj0 as Rectangle, obj1 as Line);
                 case GeometricEnum.CIRCLE:
                 return this.rectangleCircle();
                 case GeometricEnum.POINT:
@@ -109,6 +111,8 @@ export class Collider {
                 return this.aabbAABB(obj0 as AABB, obj1 as AABB);
                 case GeometricEnum.POINT:
                 return this.aabbPoint(obj0 as AABB, obj1 as Point);
+                case GeometricEnum.LINE:
+                return this.aabbLine(obj0 as AABB, obj1 as Line);
                 case GeometricEnum.CIRCLE:
                 return this.aabbCircle(obj0 as AABB, obj1 as Circle);
                 case GeometricEnum.RECTANGLE:
@@ -152,7 +156,26 @@ export class Collider {
         return this.pointPolygon();
     }
 
-    public lineLine(): boolean {
+    public lineLine(obj0: Line, obj1: Line): boolean {
+        let b: Vector2 = new Vector2(obj0.end.x - obj0.start.x, obj0.end.y - obj0.start.y);
+        let d: Vector2 = new Vector2(obj1.end.x - obj1.start.x, obj1.end.y - obj1.start.y);
+        let bDotDPerp = b.x * d.y - b.y * d.x;
+
+        if (bDotDPerp === 0) {
+            return false;
+        }
+
+        let c: Vector2 = new Vector2(obj1.start.x - obj0.start.x, obj1.start.y - obj0.start.y);
+        let t: number = (c.x * d.y - c.y * d.x) / bDotDPerp;
+        if (t < 0 || t > 1) {
+            return false;
+        }
+
+        let u: number = (c.x * b.y - c.y * b.x) / bDotDPerp;
+        if (u < 0 || u > 1) {
+            return false;
+        }
+
         return true;
     }
 
@@ -163,11 +186,32 @@ export class Collider {
         return this.lineCircle();
     }
 
-    public lineRectangle(): boolean {
-        return true;
+    public lineRectangle(obj0: Line, obj1: Rectangle): boolean {
+        let p0: Point = new Point(obj1.pos.x, obj1.pos.y);
+        let p1: Point = new Point(obj1.pos.x, obj1.pos.y + obj1.height);
+        let p2: Point = new Point(obj1.pos.x + obj1.width, obj1.pos.y + obj1.height);
+        let p3: Point = new Point(obj1.pos.x + obj1.width, obj1.pos.y);
+
+        if (this.lineLine(obj0, new Line(p0.x, p0.y, p1.x, p1.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p1.x, p1.y, p2.x, p2.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p2.x, p2.y, p3.x, p3.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p3.x, p3.y, p0.x, p0.y))) {
+            return true;
+        }
+
+        return false;
     }
-    public rectangleLine(): boolean {
-        return this.lineRectangle();
+    public rectangleLine(obj0: Rectangle, obj1: Line): boolean {
+        return this.lineRectangle(obj1, obj0);
     }
 
     public linePolygon(): boolean {
@@ -229,6 +273,34 @@ export class Collider {
     }
     public aabbPoint(obj0: AABB, obj1: Point): boolean {
         return this.pointAABB(obj1, obj0);
+    }
+
+    public lineAABB(obj0: Line, obj1: AABB): boolean {
+        let p0: Point = new Point(obj1.pos.x - obj1.halfWidth, obj1.pos.y - obj1.halfHeight);
+        let p1: Point = new Point(obj1.pos.x - obj1.halfWidth, obj1.pos.y + obj1.halfHeight);
+        let p2: Point = new Point(obj1.pos.x + obj1.halfWidth, obj1.pos.y + obj1.halfHeight);
+        let p3: Point = new Point(obj1.pos.x + obj1.halfWidth, obj1.pos.y - obj1.halfHeight);
+
+        if (this.lineLine(obj0, new Line(p0.x, p0.y, p1.x, p1.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p1.x, p1.y, p2.x, p2.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p2.x, p2.y, p3.x, p3.y))) {
+            return true;
+        }
+
+        if (this.lineLine(obj0, new Line(p3.x, p3.y, p0.x, p0.y))) {
+            return true;
+        }
+
+        return false;
+    }
+    public aabbLine(obj0: AABB, obj1: Line): boolean {
+        return this.lineAABB(obj1, obj0);
     }
 
     public circleAABB(obj0: Circle, obj1: AABB): boolean {

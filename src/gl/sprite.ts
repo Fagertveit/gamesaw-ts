@@ -5,6 +5,10 @@ import { RenderCall } from './renderer2d/render-call';
 import { Vector2 } from '../geometry/vector2d';
 import { degreeToRadian } from '../utility/angle';
 
+export interface Sprites {
+    [index: string]: Sprite;
+}
+
 export class Sprite {
     public uv: number[];
     public width: number;

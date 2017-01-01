@@ -22,6 +22,7 @@ export class Font {
     public resourceManager: ResourceManager;
     public texturePage: FontTexture = {};
     public font: BitmapFont = new BitmapFont();
+    public renderer: FontRenderer;
     public base: number = 0;
     public lineHeight: number = 0;
     public color: Color = new Color(255, 255, 255, 1.0);
@@ -34,6 +35,7 @@ export class Font {
         this.http = new Http(false);
 
         this.resourceManager = ResourceManager.getInstance();
+        this.renderer = new FontRenderer();
 
         if (configUrl) {
             this.configUrl = configUrl;
@@ -120,7 +122,7 @@ export class Font {
         this.resourceManager.otherReady();
     }
 
-    public drawString(renderer: FontRenderer, str: string, x: number, y: number): void {
+    public drawString(str: string, x: number, y: number): void {
         let currentX: number = x;
         let currentY: number = 0;
 
@@ -138,13 +140,13 @@ export class Font {
             if (this.font.glyphs[id]) {
                 let glyph = this.font.glyphs[id];
 
-                this.renderGlyph(renderer, currentX + glyph.xOffset, y + glyph.yOffset, glyph);
+                this.renderGlyph(currentX + glyph.xOffset, y + glyph.yOffset, glyph);
                 currentX += glyph.xAdvance;
             }
         }
     }
 
-    public renderGlyph(renderer: FontRenderer, x: number, y: number, glyph: Glyph): void {
+    public renderGlyph(x: number, y: number, glyph: Glyph): void {
         let uvs: number[] = [];
 
         uvs[0] = glyph.x / this.font.common.scaleWidth;
@@ -160,7 +162,11 @@ export class Font {
         renderCall.indices = [0, 1, 2, 1, 2, 3];
         renderCall.numIndices = 6;
 
-        renderer.addCall(renderCall);
+        this.renderer.addCall(renderCall);
+    }
+
+    public execute(): void {
+        this.renderer.execute();
     }
 
     public calculateWidth(str: string): number {
