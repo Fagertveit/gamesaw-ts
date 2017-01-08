@@ -18,12 +18,13 @@ export class Particle {
     }
 
     public update(gravity: number, wind: number, growth: number, delta: number): void {
+        let lowDelta = delta / 10;
         this.life -= delta;
-        this.size += growth;
-        this.dir.y += gravity;
-        this.dir.x += wind;
-        this.pos.x += (this.dir.x * this.vel);
-        this.pos.y += (this.dir.y * this.vel);
+        this.size += growth * lowDelta;
+        this.dir.y += gravity * lowDelta;
+        this.dir.x += wind * lowDelta;
+        this.pos.x += (this.dir.x * this.vel * lowDelta);
+        this.pos.y += (this.dir.y * this.vel * lowDelta);
     }
 
     public isDead(): boolean {

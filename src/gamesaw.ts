@@ -8,6 +8,7 @@ export class Gamesaw {
     public widthRatio: number;
     public heightRatio: number;
     public renderMode: string = 'webgl';
+    public uid: number = 1;
 
     constructor() {
         if (Gamesaw.instance) {
@@ -109,5 +110,12 @@ export class Gamesaw {
 
     public getResolutionHeight(): number {
         return this.height;
+    }
+
+    public getUID(): number {
+        let uid = this.uid;
+        this.uid +=1;
+
+        return uid;
     }
 }

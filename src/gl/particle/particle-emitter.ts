@@ -5,6 +5,7 @@ import { Texture } from '../texture';
 import { Color } from '../../graphics/color';
 import { Surface3d } from '../../graphics/surface3d';
 import { Http } from '../../utility/http';
+import { Gamesaw } from '../../gamesaw';
 
 interface AJAXResponse {
     responseText?: string;
@@ -16,7 +17,9 @@ export class ParticleEmitter {
     public particles: Particle[] = [];
     public vertices: number[] = [];
     public sizes: number[] = [];
-    public currentLife: number;
+    public currentLife: number = 0;
+    public identifier: string;
+    public hidden: boolean = false;
 
     public texture: Texture;
     public pos: Point;
@@ -47,6 +50,8 @@ export class ParticleEmitter {
         this.gl = Surface3d.getInstance().getContext();
         this.blendSrc = this.gl.SRC_ALPHA;
         this.blendDst = this.gl.ONE;
+
+        this.identifier = 'Emitter ' + Gamesaw.getInstance().getUID();
 
         this.http = new Http(false);
     }

@@ -10,11 +10,11 @@ export class Application {
     public active: boolean = true;
     public applicationTimer: number;
     public targetFps: number = 30;
-    public delta: number;
-    public lastDelta: number;
-    public lastUpdate: number;
-    public fps: number;
-    public frames: number;
+    public delta: number = 0;
+    public lastDelta: number = 0;
+    public lastUpdate: number = 0;
+    public fps: number = 0;
+    public frames: number = 0;
 
     constructor(width: number, height: number, targetFps?: number, renderWidth?: number, renderHeight?: number) {
         this.config = Gamesaw.getInstance();
@@ -70,5 +70,22 @@ export class Application {
         }
 
         this.sceneManager.update(delta);
+    }
+
+    public setTargetFps(targetFps: number): void {
+        this.targetFps = targetFps;
+
+        this.stop();
+        this.start();
+    }
+
+    public resizeCanvas(width: number, height: number, renderWidth?: number, renderHeight?: number): void {
+        this.config.setResolution(width, height);
+
+        if (renderWidth && renderHeight) {
+            this.config.setRenderResolution(renderWidth, renderHeight);
+        }
+
+        this.surface.resize();
     }
 }

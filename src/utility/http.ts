@@ -27,10 +27,6 @@ export class Http {
 
     private createXHR(): XMLHttpRequest {
         try { return new XMLHttpRequest(); } catch (err) {}
-        try { return new ActiveXObject('Msxml2.XMLHTTP.6.0'); } catch (err) {}
-        try { return new ActiveXObject('Msxml2.XMLHTTP.3.0'); } catch (err) {}
-        try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch (err) {}
-        try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch (err) {}
 
         return null;
     }

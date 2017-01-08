@@ -34,8 +34,6 @@ export class Surface3d {
             this.canvas.setAttribute('height', String(this.config.getResolutionHeight()));
         }
 
-        this.canvas.style.position = 'absolute';
-
         container.appendChild(this.canvas);
     };
 
@@ -65,7 +63,27 @@ export class Surface3d {
             this.canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
     }
 
+    public resize(): void {
+        let gl = this.getContext();
+
+        if (this.config.doScale()) {
+            this.canvas.setAttribute('width', String(this.config.getRenderResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getRenderResolutionHeight()));
+
+            gl.viewport(0, 0, this.config.getRenderResolutionWidth(), this.config.getRenderResolutionHeight());
+        } else {
+            this.canvas.setAttribute('width', String(this.config.getResolutionWidth()));
+            this.canvas.setAttribute('height', String(this.config.getResolutionHeight()));
+
+            gl.viewport(0, 0, this.config.getResolutionWidth(), this.config.getResolutionHeight());
+        }
+    }
+
     public toDataUrl(): string {
         return this.canvas.toDataURL('image/png');
+    }
+
+    public toDataBlob(callback: Function): void {
+        this.canvas.toBlob(() => callback, 'image/png');
     }
 }

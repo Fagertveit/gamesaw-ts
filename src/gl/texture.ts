@@ -39,7 +39,7 @@ export class Texture {
         this.image.addEventListener('error', _this.errorHandler);
     }
 
-    private init(): void {
+    public init(): void {
         let gl = this.gl;
 
         gl.bindTexture(gl.TEXTURE_2D, this.texture);

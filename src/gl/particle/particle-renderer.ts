@@ -12,7 +12,7 @@ const vertexShader: string = 'attribute vec2 a_position;\n' +
 '	vec2 zeroToOne = a_position / u_resolution;\n' +
 '	vec2 zeroToTwo = zeroToOne * 2.0;\n' +
 '	vec2 clipSpace = zeroToTwo - 1.0;\n' +
-'	gl_Position = vec4(clipSpace * vec2(1, 1), 0, 1);\n' +
+'	gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);\n' +
 '	gl_PointSize = a_pointSize;\n' +
 '}\n';
 
@@ -70,10 +70,17 @@ export class ParticleRenderer {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
     }
 
-    public render(emitter: ParticleEmitter): void {
+    public clear(): void {
         let gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+
+    public render(emitter: ParticleEmitter, system?: boolean): void {
+        let gl = this.gl;
+        if (!system) {
+            this.clear();
+        }
 
         gl.useProgram(this.program.program);
 
@@ -101,5 +108,15 @@ export class ParticleRenderer {
 
         gl.disableVertexAttribArray(this.position);
         gl.disableVertexAttribArray(this.pointSize);
+    }
+
+    public renderSystem(system: ParticleSystem) {
+        this.clear();
+
+        for (let emitter of system.emitters) {
+            if (!emitter.hidden) {
+                this.render(emitter, true);
+            }
+        }
     }
 }
