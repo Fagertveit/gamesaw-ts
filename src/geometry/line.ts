@@ -1,5 +1,6 @@
 import { GeometricEnum, GeometricObject } from './geometry';
 import { Point } from './point';
+import { Vector2 } from './vector2d';
 
 export class Line implements GeometricObject {
     public type = GeometricEnum.LINE;
@@ -32,5 +33,9 @@ export class Line implements GeometricObject {
     public set(x0: number, y0: number, x1: number, y1: number) {
         this.start.set(x0, y0);
         this.end.set(x1, y1);
+    }
+
+    public getNormal(): Vector2 {
+        return new Vector2((this.end.y - this.start.y), -(this.end.x - this.start.x)).normalize();
     }
 }

@@ -2,7 +2,7 @@
 
 import { expect } from 'chai';
 
-import { Collider, intersects, Rectangle, Point, Circle } from './index';
+import { Collider, intersects, Rectangle, Point, Circle, Line } from './index';
 
 describe('Collider', () => {
     it('Two circles should collide', () => {
@@ -60,4 +60,18 @@ describe('Collider', () => {
 
         expect(intersects(point, rectangle)).to.be.equal(false);
     });
+
+    it('Circle should intersect line', () => {
+        let circle = new Circle(100, 100, 50);
+        let line = new Line(50, 120, 200, 120);
+
+        expect(intersects(circle, line)).to.be.equal(true);
+    });
+
+    it('Circle should\'nt intersect line', () => {
+        let circle = new Circle(100, 100, 50);
+        let line = new Line(50, 160, 200, 160);
+
+        expect(intersects(circle, line)).to.be.equal(false);
+    })
 });

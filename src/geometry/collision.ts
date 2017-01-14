@@ -37,7 +37,7 @@ export class Collider {
                 case GeometricEnum.AABB:
                 return this.pointAABB(obj0 as Point, obj1 as AABB);
                 case GeometricEnum.POLYGON:
-                return this.pointPolygon();
+                return this.pointPolygon(obj0 as Point, obj1 as Polygon);
                 default:
                 throw new Error('Second object not a collidable body');
             }
@@ -46,7 +46,7 @@ export class Collider {
                 case GeometricEnum.POINT:
                 return this.linePoint();
                 case GeometricEnum.CIRCLE:
-                return this.lineCircle();
+                return this.lineCircle(obj0 as Line, obj1 as Circle);
                 case GeometricEnum.RECTANGLE:
                 return this.lineRectangle(obj0 as Line, obj1 as Rectangle);
                 case GeometricEnum.AABB:
@@ -61,7 +61,7 @@ export class Collider {
                 case GeometricEnum.CIRCLE:
                 return this.circleCircle(obj0 as Circle, obj1 as Circle);
                 case GeometricEnum.LINE:
-                return this.circleLine();
+                return this.circleLine(obj0 as Circle, obj1 as Line);
                 case GeometricEnum.POINT:
                 return this.circlePoint(obj0 as Circle, obj1 as Point);
                 case GeometricEnum.RECTANGLE:
@@ -101,7 +101,7 @@ export class Collider {
                 case GeometricEnum.RECTANGLE:
                 return this.polygonRectangle();
                 case GeometricEnum.POINT:
-                return this.polygonPoint();
+                return this.polygonPoint(obj0 as Polygon, obj1 as Point);
                 default:
                 throw new Error('Second object not a collidable body');
             }
@@ -149,11 +149,29 @@ export class Collider {
         return this.pointRectangle(obj1, obj0);
     }
 
-    public pointPolygon(): boolean {
+    public pointPolygon(obj0: Point, obj1: Polygon): boolean {
+        let v0: Vector2;
+        let v1: Vector2;
+        let vPoint: Vector2;
+
+        for (let i = 0; i < obj1.points.length; i++) {
+            vPoint = new Vector2(obj0.x, obj0.y);
+            if (i !== length - 1) {
+                v0 = new Vector2(obj1.points[i + 1].x, obj1.points[i + 1].y);
+                v1 = new Vector2(obj1.points[i].x, obj1.points[i].y);
+            } else {
+                v0 = new Vector2(obj1.points[i].x, obj1.points[i].y);
+                v1 = new Vector2(obj1.points[0].x, obj1.points[0].y);
+            }
+
+            if (vPoint.sub(v0).cross(v0.sub(v1)) < 0.0) {
+                return false;
+            }
+        }
         return true;
     }
-    public polygonPoint(): boolean {
-        return this.pointPolygon();
+    public polygonPoint(obj0: Polygon, obj1: Point): boolean {
+        return this.pointPolygon(obj1, obj0);
     }
 
     public lineLine(obj0: Line, obj1: Line): boolean {
@@ -179,11 +197,33 @@ export class Collider {
         return true;
     }
 
-    public lineCircle(): boolean {
-        return true;
+    public lineCircle(obj0: Line, obj1: Circle): boolean {
+        let lineVector = new Vector2(obj0.end.x, obj0.end.y).sub(new Vector2(obj0.start.x, obj0.start.y));
+        let pointVector = new Vector2(obj1.pos.x, obj1.pos.y).sub(new Vector2(obj0.start.x, obj0.start.y));
+
+        let projVector = lineVector.project(pointVector);
+        let projLength = projVector.length();
+        let lineLength = lineVector.length();
+
+        if (projLength > lineLength) {
+            return this.pointCircle(new Point(obj0.end.x, obj0.end.y), obj1);
+        }
+
+        let closest = new Vector2(obj0.start.x, obj0.start.y).add(projVector);
+        let cBVector = closest.sub(new Vector2(obj0.end.x, obj0.end.y));
+
+        if (cBVector.length() > lineLength) {
+            return this.pointCircle(new Point(obj0.start.x, obj0.start.y), obj1);
+        }
+
+        if (closest.sub(new Vector2(obj1.pos.x, obj1.pos.y)).length() < obj1.radius) {
+            return true;
+        }
+
+        return false;
     }
-    public circleLine(): boolean {
-        return this.lineCircle();
+    public circleLine(obj0: Circle, obj1: Line): boolean {
+        return this.lineCircle(obj1, obj0);
     }
 
     public lineRectangle(obj0: Line, obj1: Rectangle): boolean {

@@ -114,7 +114,7 @@ export class Gamesaw {
 
     public getUID(): number {
         let uid = this.uid;
-        this.uid +=1;
+        this.uid += 1;
 
         return uid;
     }

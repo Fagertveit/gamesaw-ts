@@ -38,7 +38,7 @@ export class Color {
     public alpha: number = 1;
 
     constructor(red?: number, green?: number, blue?: number, alpha?: number) {
-        if (red && green && blue) {
+        if (red !== undefined && green !== undefined && blue !== undefined) {
             this.rgb[RGBA.RED] = red;
             this.rgb[RGBA.GREEN] = green;
             this.rgb[RGBA.BLUE] = blue;

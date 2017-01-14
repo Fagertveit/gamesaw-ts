@@ -58,8 +58,20 @@ export class Vector2 implements GeometricObject, Vec2 {
         return new Vector2(this.x - v2.x, this.y - v2.y);
     }
 
+    public mul(v2: Vec2): Vector2 {
+        return new Vector2(this.x * v2.x, this.y * v2.y);
+    }
+
     public invert(): Vector2 {
         return new Vector2(-this.x, -this.y);
+    }
+
+    public invertX(): Vector2 {
+        return new Vector2(-this.x, this.y);
+    }
+
+    public invertY(): Vector2 {
+        return new Vector2(this.x, -this.y);
     }
 
     public scale(scalar: number): Vector2 {
@@ -96,7 +108,7 @@ export class Vector2 implements GeometricObject, Vec2 {
     }
 
     public cross(v2: Vec2): number {
-        return ((this.x * v2.y) - (this.y * v2.x));
+        return ((this.x * v2.y) - (v2.x * this.y));
     }
 
     public angle(): number {

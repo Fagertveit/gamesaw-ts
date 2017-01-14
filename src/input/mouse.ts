@@ -6,6 +6,8 @@ export class Mouse {
     public x: number;
     public y: number;
     public button: boolean[];
+    public buttonDown: boolean[];
+    public buttonUp: boolean[];
     public click: boolean[];
     public stopPropagation: boolean = false;
     public preventDefault: boolean = false;
@@ -19,6 +21,8 @@ export class Mouse {
         Mouse.instance = this;
 
         this.button = [false, false, false];
+        this.buttonDown = [false, false, false];
+        this.buttonUp = [false, false, false];
         this.click = [false, false, false];
     }
 
